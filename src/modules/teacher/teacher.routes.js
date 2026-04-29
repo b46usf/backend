@@ -20,9 +20,20 @@ const studentParamsSchema = {
   }),
 };
 
+const interventionBodySchema = {
+  body: z.object({
+    message: z.string().min(5).max(500),
+  }),
+};
+
 router.use(authenticate, authorize(ROLES.ADMIN, ROLES.TEACHER));
 router.get('/classes/dashboard', teacherController.getClassDashboard);
 router.get('/students/:studentId/intervention', validate(studentParamsSchema), teacherController.getStudentIntervention);
+router.post(
+  '/students/:studentId/intervention',
+  validate({ ...studentParamsSchema, ...interventionBodySchema }),
+  teacherController.createStudentIntervention,
+);
 router.get('/', teacherController.listTeachers);
 router.get('/:id', validate(paramsSchema), teacherController.getTeacherById);
 

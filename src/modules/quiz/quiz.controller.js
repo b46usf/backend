@@ -32,7 +32,18 @@ const submitQuiz = asyncHandler(async (req, res) => {
   });
 });
 
+const createQuiz = asyncHandler(async (req, res) => {
+  const quiz = await quizService.createQuiz(req.user.schoolId, req.body);
+
+  return sendSuccess(res, {
+    statusCode: 201,
+    message: 'Quiz created successfully',
+    data: quiz,
+  });
+});
+
 module.exports = {
+  createQuiz,
   getQuizById,
   listQuizzes,
   submitQuiz,

@@ -1,4 +1,4 @@
-const { NotFoundError } = require('../../shared/errors');
+const { BadRequestError, NotFoundError } = require('../../shared/errors');
 const { withTransaction } = require('../../config/db');
 const { LEVELS } = require('../../config/constants');
 const { calculateQuizScore } = require('../../utils/scoring');
@@ -22,6 +22,46 @@ const getQuizById = async (quizId, schoolId) => {
     questions,
   };
 };
+
+const createQuiz = async (schoolId, payload) =>
+  withTransaction(async (connection) => {
+    const quiz = await quizRepository.createQuiz({ ...payload, schoolId }, connection);
+
+    if (!quiz) {
+      throw new NotFoundError('Subject not found');
+    }
+
+    for (const question of payload.questions) {
+      if (question.questionType === 'multiple_choice' && !question.correctAnswer) {
+        throw new BadRequestError('correctAnswer is required for multiple choice questions');
+      }
+
+      await quizRepository.createQuestion(
+        {
+          quizId: quiz.id,
+          questionText: question.questionText,
+          questionType: question.questionType,
+          optionA: question.optionA,
+          optionB: question.optionB,
+          optionC: question.optionC,
+          optionD: question.optionD,
+          correctAnswer: question.correctAnswer,
+          keywords: question.keywords,
+          point: question.point,
+          difficulty: question.difficulty,
+        },
+        connection,
+      );
+    }
+
+    const createdQuiz = await quizRepository.findQuizById(quiz.id, schoolId, connection);
+    const questions = await quizRepository.findQuizQuestions(quiz.id, connection);
+
+    return {
+      ...createdQuiz,
+      questions,
+    };
+  });
 
 const resolveRiskStatus = (accuracyRate) => {
   if (accuracyRate < 50) {
@@ -254,6 +294,7 @@ const submitQuiz = async (userId, schoolId, quizId, payload) =>
   });
 
 module.exports = {
+  createQuiz,
   getQuizById,
   listQuizzes,
   submitQuiz,

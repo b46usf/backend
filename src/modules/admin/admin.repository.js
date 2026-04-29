@@ -111,9 +111,29 @@ const createSubject = async (payload, executor = pool) => {
   return rows[0];
 };
 
+const findFirstClass = async (schoolId, executor = pool) => {
+  const [rows] = await executor.execute(
+    'SELECT id FROM classes WHERE school_id = ? ORDER BY grade_level ASC, name ASC LIMIT 1',
+    [schoolId],
+  );
+
+  return rows[0] || null;
+};
+
+const updateUserPassword = async (schoolId, userId, password, executor = pool) => {
+  const [result] = await executor.execute(
+    'UPDATE users SET password = ? WHERE id = ? AND school_id = ?',
+    [password, userId, schoolId],
+  );
+
+  return result.affectedRows > 0;
+};
+
 module.exports = {
   createClass,
   createSubject,
   findClasses,
+  findFirstClass,
   findSubjects,
+  updateUserPassword,
 };

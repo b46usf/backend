@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "nodemon src/core/server.js",
     "start": "node src/core/server.js",
+    "db:seed": "node database/seed-demo.js",
     "check": "node --check src/core/server.js"
   },
   "keywords": [

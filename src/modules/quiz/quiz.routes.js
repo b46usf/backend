@@ -34,8 +34,34 @@ const submitSchema = {
   }),
 };
 
+const createQuizSchema = {
+  body: z.object({
+    subjectId: z.coerce.number().int().positive(),
+    materialId: z.coerce.number().int().positive().optional(),
+    title: z.string().min(3).max(150),
+    quizType: z.enum(Object.values(QUIZ_TYPES)).default(QUIZ_TYPES.PRACTICE),
+    level: z.enum(Object.values(LEVELS)).default(LEVELS.BASIC),
+    durationMinutes: z.coerce.number().int().positive().default(15),
+    questions: z.array(
+      z.object({
+        questionText: z.string().min(3),
+        questionType: z.enum(['multiple_choice', 'essay']).default('multiple_choice'),
+        optionA: z.string().optional(),
+        optionB: z.string().optional(),
+        optionC: z.string().optional(),
+        optionD: z.string().optional(),
+        correctAnswer: z.string().optional(),
+        keywords: z.string().optional(),
+        point: z.coerce.number().positive().default(10),
+        difficulty: z.enum(['easy', 'medium', 'hard']).default('easy'),
+      }),
+    ).min(1).max(20),
+  }),
+};
+
 router.use(authenticate);
 router.get('/', validate(querySchema), quizController.listQuizzes);
+router.post('/', authorize(ROLES.ADMIN, ROLES.TEACHER), validate(createQuizSchema), quizController.createQuiz);
 router.get('/:id', validate(paramsSchema), quizController.getQuizById);
 router.post('/:id/submit', authorize(ROLES.STUDENT), validate({ ...paramsSchema, ...submitSchema }), quizController.submitQuiz);
 

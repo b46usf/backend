@@ -90,7 +90,31 @@ const getStudentIntervention = async (userId, schoolId, studentId) => {
   };
 };
 
+const createStudentIntervention = async (userId, schoolId, studentId, payload) => {
+  const teacher = await getCurrentTeacher(userId, schoolId);
+  const detail = await teacherRepository.findStudentInterventionDetail(teacher.id, schoolId, studentId);
+
+  if (!detail) {
+    throw new NotFoundError('Student intervention detail not found');
+  }
+
+  const intervention = await teacherRepository.createStudentInterventionLog({
+    studentId,
+    message: payload.message,
+    teacherId: teacher.id,
+    schoolId,
+  });
+
+  return {
+    id: intervention.id,
+    student_id: Number(studentId),
+    message: payload.message,
+    logged: true,
+  };
+};
+
 module.exports = {
+  createStudentIntervention,
   getTeacherById,
   getClassDashboard,
   getStudentIntervention,

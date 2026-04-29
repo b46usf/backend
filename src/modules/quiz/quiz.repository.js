@@ -133,6 +133,56 @@ const findQuizQuestions = async (quizId, executor = pool) => {
   return rows;
 };
 
+const createQuiz = async (payload, executor = pool) => {
+  const [result] = await executor.execute(
+    `
+      INSERT INTO quizzes (subject_id, material_id, title, quiz_type, level, duration_minutes)
+      SELECT s.id, m.id, ?, ?, ?, ?
+      FROM subjects s
+      LEFT JOIN materials m ON m.id = ? AND m.subject_id = s.id
+      WHERE s.id = ? AND s.school_id = ?
+    `,
+    [
+      payload.title,
+      payload.quizType,
+      payload.level,
+      payload.durationMinutes,
+      payload.materialId || null,
+      payload.subjectId,
+      payload.schoolId,
+    ],
+  );
+
+  return result.affectedRows ? { id: result.insertId } : null;
+};
+
+const createQuestion = async (payload, executor = pool) => {
+  const [result] = await executor.execute(
+    `
+      INSERT INTO questions
+        (quiz_id, question_text, question_type, option_a, option_b, option_c, option_d, correct_answer, keywords, point, difficulty)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `,
+    [
+      payload.quizId,
+      payload.questionText,
+      payload.questionType,
+      payload.optionA || null,
+      payload.optionB || null,
+      payload.optionC || null,
+      payload.optionD || null,
+      payload.correctAnswer || null,
+      payload.keywords || null,
+      payload.point,
+      payload.difficulty,
+    ],
+  );
+
+  return {
+    id: result.insertId,
+  };
+};
+
 const findQuizQuestionsForScoring = async (quizId, executor = pool) => {
   const [rows] = await executor.execute(
     `
@@ -321,6 +371,8 @@ const awardBadge = async (studentId, schoolId, badgeId, executor = pool) => {
 };
 
 module.exports = {
+  createQuestion,
+  createQuiz,
   findQuizById,
   findQuizQuestions,
   findQuizQuestionsForScoring,

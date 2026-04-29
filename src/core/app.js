@@ -12,9 +12,19 @@ const apiRouter = require('./router');
 
 const app = express();
 
-const allowedOrigins = env.CLIENT_URL.split(',')
+const developmentOrigins = [
+  'http://localhost:3000',
+  'http://127.0.0.1:3000',
+  'http://localhost:5173',
+  'http://127.0.0.1:5173',
+];
+const allowedOrigins = [
+  ...env.CLIENT_URL.split(','),
+  ...(env.NODE_ENV === 'production' ? [] : developmentOrigins),
+]
   .map((origin) => origin.trim())
   .filter(Boolean);
+const uniqueAllowedOrigins = [...new Set(allowedOrigins)];
 
 app.disable('x-powered-by');
 app.use(httpLogger);
@@ -24,12 +34,13 @@ app.use(helmet());
 app.use(
   cors({
     origin(origin, callback) {
-      if (!origin || !allowedOrigins.length || allowedOrigins.includes(origin)) {
+      if (!origin || !uniqueAllowedOrigins.length || uniqueAllowedOrigins.includes(origin)) {
         return callback(null, true);
       }
 
       return callback(new Error('Origin is not allowed by CORS'));
     },
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-EduSense-Plain-Response'],
     credentials: true,
   }),
 );

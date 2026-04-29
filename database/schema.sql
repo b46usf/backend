@@ -510,61 +510,260 @@ CREATE TABLE student_badges (
     ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Demo seed snapshot.
+-- Login accounts:
+--   admin@edusense.ai / demo12345
+--   teacher@edusense.ai / demo12345
+--   student@edusense.ai / demo12345
+-- User emails and password below are encrypted/hashed for the default backend .env.
+-- Run `npm run db:seed` from backend to regenerate richer demo data with the active .env values.
+
+SET @demo_password_hash = '$2b$10$ltaXjGC7.iYY1j1bOn5ig.WljBrSixN/B.N8sYI3IwDZXPT343aiy';
+
 INSERT INTO roles (name)
 VALUES ('admin'), ('teacher'), ('student');
 
-INSERT INTO schools (name, code, email, phone, address, city, province, country, postal_code, website_url)
-VALUES (
-  'EduSense Demo School',
-  'EDS-DEMO',
-  'admin@edusense.example',
-  '+62-21-555-0100',
-  'Jl. Pendidikan No. 1',
-  'Jakarta',
-  'DKI Jakarta',
-  'Indonesia',
-  '10110',
-  'https://edusense.example'
-);
+SET @admin_role_id = (SELECT id FROM roles WHERE name = 'admin');
+SET @teacher_role_id = (SELECT id FROM roles WHERE name = 'teacher');
+SET @student_role_id = (SELECT id FROM roles WHERE name = 'student');
+
+INSERT INTO schools
+  (name, code, email, phone, address, city, province, country, postal_code, website_url, status)
+VALUES
+  (
+    'SMA Nusantara Demo',
+    'SMA-NUSA-DEMO',
+    'operator@smanusantara.demo',
+    '+62-21-555-0100',
+    'Jl. Pendidikan No. 1',
+    'Jakarta',
+    'DKI Jakarta',
+    'Indonesia',
+    '10110',
+    'https://edusense.example',
+    'active'
+  );
 
 SET @default_school_id = LAST_INSERT_ID();
 
 INSERT INTO subscriptions
   (school_id, plan_name, plan_code, status, billing_cycle, max_students, max_teachers, starts_at, ends_at)
 VALUES
-  (@default_school_id, 'Starter Trial', 'STARTER-TRIAL', 'trial', 'monthly', 500, 50, CURRENT_TIMESTAMP, DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 30 DAY));
+  (
+    @default_school_id,
+    'EduSense Demo Suite',
+    'DEMO-SUITE',
+    'active',
+    'semesterly',
+    1000,
+    80,
+    DATE_SUB(NOW(), INTERVAL 15 DAY),
+    DATE_ADD(NOW(), INTERVAL 165 DAY)
+  );
+
+INSERT INTO users (school_id, role_id, name, email, password, avatar, status)
+VALUES
+  (@default_school_id, @admin_role_id, 'Admin Sekolah', 'enc:v1:BNRzxOwTZVOQxLKMBskkW+s5KqBBFu3fDIKbAHngxfo=', @demo_password_hash, 'AS', 'active'),
+  (@default_school_id, @teacher_role_id, 'Bu Rani Wijaya', 'enc:v1:ei0rv0ot+8gPo7uhuowQP8yXg0QNFKnVLj+y0ZRIL6M=', @demo_password_hash, 'RW', 'active'),
+  (@default_school_id, @teacher_role_id, 'Pak Bima Santoso', 'enc:v1:rx+aEIYDv2S2kfFr4flpTyIKfhRa6A9rzchKTE4s7ec=', @demo_password_hash, 'BS', 'active'),
+  (@default_school_id, @student_role_id, 'Alya Prameswari', 'enc:v1:peU79TdKBFk3lxZ4J5eKIwNywbgmEPLei5WJ69DQNy0=', @demo_password_hash, 'AP', 'active'),
+  (@default_school_id, @student_role_id, 'Raka Putra', 'enc:v1:yfCRkvnrUjzD5XSV5/b/oH8hzmuCh4AQv/R7+CwYBzI=', @demo_password_hash, 'RP', 'active'),
+  (@default_school_id, @student_role_id, 'Nadia Zahra', 'enc:v1:5V+udU25ZRvzFC24YicOvq9NRfUcwSssiw2Ged7Mwak=', @demo_password_hash, 'NZ', 'active');
+
+SET @admin_user_id = (SELECT id FROM users WHERE name = 'Admin Sekolah' AND school_id = @default_school_id);
+SET @rani_user_id = (SELECT id FROM users WHERE name = 'Bu Rani Wijaya' AND school_id = @default_school_id);
+SET @bima_user_id = (SELECT id FROM users WHERE name = 'Pak Bima Santoso' AND school_id = @default_school_id);
+SET @alya_user_id = (SELECT id FROM users WHERE name = 'Alya Prameswari' AND school_id = @default_school_id);
+SET @raka_user_id = (SELECT id FROM users WHERE name = 'Raka Putra' AND school_id = @default_school_id);
+SET @nadia_user_id = (SELECT id FROM users WHERE name = 'Nadia Zahra' AND school_id = @default_school_id);
+
+INSERT INTO teachers (school_id, user_id, employee_number, position, specialization)
+VALUES
+  (@default_school_id, @rani_user_id, 'NIP-DEMO-001', 'teacher', 'Matematika'),
+  (@default_school_id, @bima_user_id, 'NIP-DEMO-002', 'teacher', 'Fisika');
+
+SET @rani_teacher_id = (SELECT id FROM teachers WHERE user_id = @rani_user_id);
+SET @bima_teacher_id = (SELECT id FROM teachers WHERE user_id = @bima_user_id);
+
+INSERT INTO classes (school_id, homeroom_teacher_id, name, grade_level, academic_year)
+VALUES
+  (@default_school_id, @rani_teacher_id, 'XI IPA 2', 'XI', '2025/2026'),
+  (@default_school_id, @bima_teacher_id, 'XI IPA 1', 'XI', '2025/2026');
+
+SET @xi_ipa_2_id = (SELECT id FROM classes WHERE school_id = @default_school_id AND name = 'XI IPA 2');
+SET @xi_ipa_1_id = (SELECT id FROM classes WHERE school_id = @default_school_id AND name = 'XI IPA 1');
+
+INSERT INTO students
+  (school_id, user_id, class_id, student_number, current_level, risk_status, total_score, streak_days)
+VALUES
+  (@default_school_id, @alya_user_id, @xi_ipa_2_id, 'SIS-DEMO-001', 'intermediate', 'safe', 428, 12),
+  (@default_school_id, @raka_user_id, @xi_ipa_2_id, 'SIS-DEMO-002', 'basic', 'warning', 196, 3),
+  (@default_school_id, @nadia_user_id, @xi_ipa_1_id, 'SIS-DEMO-003', 'advanced', 'safe', 612, 18);
+
+SET @alya_student_id = (SELECT id FROM students WHERE user_id = @alya_user_id);
+SET @raka_student_id = (SELECT id FROM students WHERE user_id = @raka_user_id);
+SET @nadia_student_id = (SELECT id FROM students WHERE user_id = @nadia_user_id);
 
 INSERT INTO subjects (school_id, name, code, description)
-VALUES (@default_school_id, 'Basic Mathematics', 'MATH-BASIC', 'Initial adaptive learning materials and diagnostic assessments.');
+VALUES
+  (@default_school_id, 'Matematika', 'MTK-WJB', 'Fungsi linear, persamaan, gradien, dan pemecahan masalah.'),
+  (@default_school_id, 'Fisika', 'FSK', 'Gerak, gaya, energi, dan eksperimen dasar.'),
+  (@default_school_id, 'Bahasa Inggris', 'BIG', 'Reading, grammar, writing, dan analytical exposition.');
 
-SET @math_subject_id = LAST_INSERT_ID();
+SET @math_subject_id = (SELECT id FROM subjects WHERE school_id = @default_school_id AND code = 'MTK-WJB');
+SET @physics_subject_id = (SELECT id FROM subjects WHERE school_id = @default_school_id AND code = 'FSK');
+SET @english_subject_id = (SELECT id FROM subjects WHERE school_id = @default_school_id AND code = 'BIG');
+
+INSERT INTO teacher_classes (school_id, teacher_id, class_id, subject_id, assignment_type)
+VALUES
+  (@default_school_id, @rani_teacher_id, @xi_ipa_2_id, @math_subject_id, 'subject_teacher'),
+  (@default_school_id, @rani_teacher_id, @xi_ipa_1_id, @math_subject_id, 'subject_teacher'),
+  (@default_school_id, @bima_teacher_id, @xi_ipa_2_id, @physics_subject_id, 'subject_teacher');
 
 INSERT INTO materials (subject_id, title, content, level, estimated_minutes)
 VALUES
-  (@math_subject_id, 'Material 1 - Number Concepts', 'Introduction to numbers, basic operations, and place value understanding.', 'basic', 15),
-  (@math_subject_id, 'Material 2 - Operations and Patterns', 'Practice with arithmetic operations, simple patterns, and core concept application.', 'intermediate', 20),
-  (@math_subject_id, 'Material 3 - Problem Analysis', 'Step-by-step strategies for solving word problems and analyzing solutions.', 'advanced', 25);
+  (@math_subject_id, 'Konsep Fungsi Linear', 'Memahami bentuk y = ax + b, nilai awal, dan laju perubahan.', 'basic', 15),
+  (@math_subject_id, 'Gradien dan Grafik', 'Menganalisis kemiringan garis dari persamaan dan grafik.', 'intermediate', 20),
+  (@math_subject_id, 'Analisis Soal Cerita Linear', 'Menerjemahkan konteks sehari-hari menjadi model linear.', 'advanced', 25),
+  (@physics_subject_id, 'Gerak Lurus Beraturan', 'Konsep jarak, waktu, kecepatan, dan grafik sederhana.', 'basic', 18),
+  (@english_subject_id, 'Simple Past Tense', 'Menggunakan bentuk lampau untuk menceritakan peristiwa.', 'intermediate', 19);
 
-INSERT INTO quizzes (subject_id, title, quiz_type, level, duration_minutes)
-VALUES (@math_subject_id, 'AI Diagnostic Test - Basic Mathematics', 'diagnostic', 'basic', 20);
+SET @math_basic_material_id = (SELECT id FROM materials WHERE subject_id = @math_subject_id AND title = 'Konsep Fungsi Linear');
+SET @math_mid_material_id = (SELECT id FROM materials WHERE subject_id = @math_subject_id AND title = 'Gradien dan Grafik');
+SET @math_adv_material_id = (SELECT id FROM materials WHERE subject_id = @math_subject_id AND title = 'Analisis Soal Cerita Linear');
+SET @physics_basic_material_id = (SELECT id FROM materials WHERE subject_id = @physics_subject_id AND title = 'Gerak Lurus Beraturan');
+SET @english_mid_material_id = (SELECT id FROM materials WHERE subject_id = @english_subject_id AND title = 'Simple Past Tense');
 
-SET @diagnostic_quiz_id = LAST_INSERT_ID();
+INSERT INTO quizzes (subject_id, material_id, title, quiz_type, level, duration_minutes)
+VALUES
+  (@math_subject_id, @math_basic_material_id, 'Tes Diagnostik AI - Fungsi Linear', 'diagnostic', 'basic', 20),
+  (@math_subject_id, @math_mid_material_id, 'Kuis Adaptif - Gradien dan Grafik', 'practice', 'intermediate', 15),
+  (@physics_subject_id, @physics_basic_material_id, 'Latihan Cepat - Gerak Lurus', 'practice', 'basic', 12),
+  (@english_subject_id, @english_mid_material_id, 'Final Mini - Simple Past', 'final', 'intermediate', 18);
+
+SET @diagnostic_quiz_id = (SELECT id FROM quizzes WHERE title = 'Tes Diagnostik AI - Fungsi Linear');
+SET @math_practice_quiz_id = (SELECT id FROM quizzes WHERE title = 'Kuis Adaptif - Gradien dan Grafik');
+SET @physics_quiz_id = (SELECT id FROM quizzes WHERE title = 'Latihan Cepat - Gerak Lurus');
+SET @english_quiz_id = (SELECT id FROM quizzes WHERE title = 'Final Mini - Simple Past');
 
 INSERT INTO questions
   (quiz_id, question_text, question_type, option_a, option_b, option_c, option_d, correct_answer, keywords, point, difficulty)
 VALUES
-  (@diagnostic_quiz_id, 'What is the result of 8 + 7?', 'multiple_choice', '13', '14', '15', '16', '15', NULL, 10, 'easy'),
-  (@diagnostic_quiz_id, 'What is the result of 24 - 9?', 'multiple_choice', '13', '14', '15', '16', '15', NULL, 10, 'easy'),
-  (@diagnostic_quiz_id, 'What is the result of 6 x 4?', 'multiple_choice', '20', '22', '24', '26', '24', NULL, 10, 'easy'),
-  (@diagnostic_quiz_id, 'What is the result of 36 / 6?', 'multiple_choice', '4', '5', '6', '7', '6', NULL, 10, 'easy'),
-  (@diagnostic_quiz_id, 'What is the next number in the pattern 2, 4, 8, 16?', 'multiple_choice', '18', '24', '32', '64', '32', NULL, 10, 'medium'),
-  (@diagnostic_quiz_id, 'What is 3/4 in decimal form?', 'multiple_choice', '0.25', '0.5', '0.75', '1.25', '0.75', NULL, 10, 'medium'),
-  (@diagnostic_quiz_id, 'If 5 pencils cost 10,000, what is the cost of 1 pencil?', 'multiple_choice', '1,000', '2,000', '2,500', '5,000', '2,000', NULL, 10, 'medium'),
-  (@diagnostic_quiz_id, 'A class has 30 students. If 40% are girls, how many girls are there?', 'multiple_choice', '10', '12', '14', '16', '12', NULL, 10, 'medium'),
-  (@diagnostic_quiz_id, 'Briefly explain the steps for solving a mathematics word problem.', 'essay', NULL, NULL, NULL, NULL, 'Identify information, choose the operation, calculate, and check the answer.', 'identify information, operation, calculate, check answer', 10, 'hard'),
-  (@diagnostic_quiz_id, 'Why is it important to check calculation results?', 'essay', NULL, NULL, NULL, NULL, 'To find mistakes and make the answer more accurate.', 'mistake, accurate, check, answer', 10, 'hard');
+  (@diagnostic_quiz_id, 'Tentukan nilai x dari persamaan 2x + 4 = 12.', 'multiple_choice', '2', '4', '6', '8', '4', NULL, 10, 'easy'),
+  (@diagnostic_quiz_id, 'Jika f(x) = x + 5, berapa nilai f(3)?', 'multiple_choice', '5', '8', '10', '15', '8', NULL, 10, 'easy'),
+  (@diagnostic_quiz_id, 'Berapa gradien dari garis y = 3x - 2?', 'multiple_choice', '-2', '2', '3', '5', '3', NULL, 10, 'medium'),
+  (@diagnostic_quiz_id, 'Jelaskan langkah utama menyelesaikan soal cerita fungsi linear.', 'essay', NULL, NULL, NULL, NULL, 'Identifikasi informasi, tentukan variabel, buat model, hitung, dan periksa jawaban.', 'identifikasi informasi, variabel, model, hitung, periksa', 10, 'hard'),
+  (@math_practice_quiz_id, 'Gradien garis y = -2x + 7 adalah...', 'multiple_choice', '-2', '2', '7', '-7', '-2', NULL, 10, 'easy'),
+  (@math_practice_quiz_id, 'Jika garis melalui (0, 3) dan (2, 7), gradiennya adalah...', 'multiple_choice', '1', '2', '3', '4', '2', NULL, 10, 'medium'),
+  (@math_practice_quiz_id, 'Jelaskan arti konstanta b pada y = ax + b.', 'essay', NULL, NULL, NULL, NULL, 'Konstanta b menunjukkan nilai awal atau titik potong sumbu y.', 'nilai awal, titik potong, sumbu y', 10, 'hard'),
+  (@physics_quiz_id, 'Rumus kecepatan pada GLB adalah...', 'multiple_choice', 'v = s/t', 'v = t/s', 's = v/t', 't = s x v', 'v = s/t', NULL, 10, 'easy'),
+  (@physics_quiz_id, 'Benda menempuh 100 m dalam 20 s. Kecepatannya...', 'multiple_choice', '2 m/s', '5 m/s', '10 m/s', '20 m/s', '5 m/s', NULL, 10, 'easy'),
+  (@english_quiz_id, 'Choose the simple past form: She ___ to school yesterday.', 'multiple_choice', 'go', 'goes', 'went', 'gone', 'went', NULL, 10, 'easy');
+
+SET @diag_q1_id = (SELECT id FROM questions WHERE quiz_id = @diagnostic_quiz_id AND question_text LIKE 'Tentukan nilai x%');
+SET @diag_q2_id = (SELECT id FROM questions WHERE quiz_id = @diagnostic_quiz_id AND question_text LIKE 'Jika f(x)%');
+SET @diag_q3_id = (SELECT id FROM questions WHERE quiz_id = @diagnostic_quiz_id AND question_text LIKE 'Berapa gradien%');
+SET @diag_q4_id = (SELECT id FROM questions WHERE quiz_id = @diagnostic_quiz_id AND question_type = 'essay');
+SET @math_q1_id = (SELECT id FROM questions WHERE quiz_id = @math_practice_quiz_id AND question_text LIKE 'Gradien garis%');
+SET @math_q2_id = (SELECT id FROM questions WHERE quiz_id = @math_practice_quiz_id AND question_text LIKE 'Jika garis%');
+SET @math_q3_id = (SELECT id FROM questions WHERE quiz_id = @math_practice_quiz_id AND question_type = 'essay');
+SET @physics_q1_id = (SELECT id FROM questions WHERE quiz_id = @physics_quiz_id AND question_text LIKE 'Rumus kecepatan%');
+SET @physics_q2_id = (SELECT id FROM questions WHERE quiz_id = @physics_quiz_id AND question_text LIKE 'Benda menempuh%');
+
+INSERT INTO quiz_attempts
+  (student_id, quiz_id, score, accuracy_rate, time_spent_seconds, attempt_number, ai_level_result, performance_trend, started_at, submitted_at)
+VALUES
+  (@alya_student_id, @diagnostic_quiz_id, 80, 75, 940, 1, 'intermediate', 'improving', DATE_SUB(NOW(), INTERVAL 7 DAY), DATE_SUB(NOW(), INTERVAL 7 DAY)),
+  (@alya_student_id, @math_practice_quiz_id, 92, 100, 780, 1, 'advanced', 'improving', DATE_SUB(NOW(), INTERVAL 1 DAY), DATE_SUB(NOW(), INTERVAL 1 DAY)),
+  (@raka_student_id, @diagnostic_quiz_id, 50, 50, 1220, 1, 'basic', 'stable', DATE_SUB(NOW(), INTERVAL 3 DAY), DATE_SUB(NOW(), INTERVAL 3 DAY)),
+  (@nadia_student_id, @math_practice_quiz_id, 96, 100, 640, 1, 'advanced', 'improving', DATE_SUB(NOW(), INTERVAL 2 DAY), DATE_SUB(NOW(), INTERVAL 2 DAY));
+
+SET @alya_diag_attempt_id = (SELECT id FROM quiz_attempts WHERE student_id = @alya_student_id AND quiz_id = @diagnostic_quiz_id LIMIT 1);
+SET @alya_math_attempt_id = (SELECT id FROM quiz_attempts WHERE student_id = @alya_student_id AND quiz_id = @math_practice_quiz_id LIMIT 1);
+SET @raka_diag_attempt_id = (SELECT id FROM quiz_attempts WHERE student_id = @raka_student_id AND quiz_id = @diagnostic_quiz_id LIMIT 1);
+SET @nadia_math_attempt_id = (SELECT id FROM quiz_attempts WHERE student_id = @nadia_student_id AND quiz_id = @math_practice_quiz_id LIMIT 1);
+
+INSERT INTO answers
+  (attempt_id, question_id, student_answer, is_correct, score, confidence_score, ai_feedback)
+VALUES
+  (@alya_diag_attempt_id, @diag_q1_id, '4', TRUE, 10, 100, 'Jawaban sudah tepat dan menunjukkan pemahaman konsep.'),
+  (@alya_diag_attempt_id, @diag_q2_id, '8', TRUE, 10, 100, 'Jawaban sudah tepat dan menunjukkan pemahaman konsep.'),
+  (@alya_diag_attempt_id, @diag_q3_id, '3', TRUE, 10, 100, 'Jawaban sudah tepat dan menunjukkan pemahaman konsep.'),
+  (@alya_diag_attempt_id, @diag_q4_id, 'Identifikasi informasi, tentukan variabel, buat model, hitung, dan cek jawaban.', TRUE, 8, 82, 'Jawaban essay menunjukkan pemahaman yang kuat.'),
+  (@alya_math_attempt_id, @math_q1_id, '-2', TRUE, 10, 100, 'Jawaban benar.'),
+  (@alya_math_attempt_id, @math_q2_id, '2', TRUE, 10, 100, 'Jawaban benar.'),
+  (@alya_math_attempt_id, @math_q3_id, 'Konstanta b adalah nilai awal dan titik potong sumbu y.', TRUE, 9, 90, 'Jawaban essay sangat sesuai.'),
+  (@raka_diag_attempt_id, @diag_q1_id, '4', TRUE, 10, 100, 'Jawaban benar.'),
+  (@raka_diag_attempt_id, @diag_q2_id, '10', FALSE, 0, 0, 'Jawaban belum tepat. Pelajari kembali konsep terkait.'),
+  (@raka_diag_attempt_id, @diag_q3_id, '2', FALSE, 0, 0, 'Jawaban belum tepat. Pelajari kembali konsep terkait.'),
+  (@raka_diag_attempt_id, @diag_q4_id, 'Saya masih perlu memahami soal cerita.', FALSE, 2, 28, 'Jawaban essay masih perlu dilengkapi.'),
+  (@nadia_math_attempt_id, @math_q1_id, '-2', TRUE, 10, 100, 'Jawaban benar.'),
+  (@nadia_math_attempt_id, @math_q2_id, '2', TRUE, 10, 100, 'Jawaban benar.'),
+  (@nadia_math_attempt_id, @math_q3_id, 'Konstanta b menunjukkan nilai awal atau titik potong sumbu y.', TRUE, 10, 96, 'Jawaban essay sangat sesuai.');
+
+INSERT INTO learning_progress
+  (student_id, material_id, status, progress_percent, time_spent_seconds, completed_at)
+VALUES
+  (@alya_student_id, @math_basic_material_id, 'completed', 100, 1800, DATE_SUB(NOW(), INTERVAL 8 DAY)),
+  (@alya_student_id, @math_mid_material_id, 'completed', 100, 2100, DATE_SUB(NOW(), INTERVAL 2 DAY)),
+  (@alya_student_id, @math_adv_material_id, 'in_progress', 64, 920, NULL),
+  (@raka_student_id, @math_basic_material_id, 'in_progress', 45, 1160, NULL),
+  (@raka_student_id, @math_mid_material_id, 'not_started', 0, 0, NULL),
+  (@nadia_student_id, @math_basic_material_id, 'completed', 100, 1500, DATE_SUB(NOW(), INTERVAL 10 DAY)),
+  (@nadia_student_id, @math_mid_material_id, 'completed', 100, 1600, DATE_SUB(NOW(), INTERVAL 5 DAY)),
+  (@nadia_student_id, @math_adv_material_id, 'completed', 100, 1900, DATE_SUB(NOW(), INTERVAL 1 DAY));
+
+INSERT INTO ai_recommendations
+  (student_id, material_id, recommendation_type, reason, priority, status)
+VALUES
+  (@alya_student_id, @math_adv_material_id, 'challenge', 'Alya sudah stabil di konsep gradien. Lanjutkan soal cerita level lanjutan.', 'low', 'pending'),
+  (@raka_student_id, @math_basic_material_id, 'remedial', 'Akurasi dasar masih 50%. Ulangi persamaan sederhana dan latihan bertahap.', 'high', 'pending'),
+  (@nadia_student_id, @physics_basic_material_id, 'challenge', 'Performa tinggi. Beri tantangan lintas konsep untuk menjaga momentum.', 'low', 'pending');
+
+INSERT INTO student_features
+  (student_id, learning_speed, accuracy_rate, consistency_score, engagement_score, retry_rate)
+VALUES
+  (@alya_student_id, 1.34, 86, 91, 88, 8),
+  (@raka_student_id, 0.82, 58, 64, 59, 24),
+  (@nadia_student_id, 1.52, 94, 96, 92, 4);
+
+INSERT INTO ai_predictions
+  (student_id, predicted_level, risk_prediction, confidence, model_version, prediction_reason)
+VALUES
+  (@alya_student_id, 'advanced', 'low', 91, 'demo-v1.0', 'Akurasi tinggi dan streak konsisten selama 12 hari.'),
+  (@raka_student_id, 'basic', 'medium', 74, 'demo-v1.0', 'Butuh remedial konsep dasar dan pemantauan progres mingguan.'),
+  (@nadia_student_id, 'advanced', 'low', 95, 'demo-v1.0', 'Performa stabil di level lanjutan.');
+
+INSERT INTO activity_logs
+  (student_id, activity_type, description, metadata, created_at)
+VALUES
+  (@alya_student_id, 'login', 'Alya masuk ke dashboard siswa.', JSON_OBJECT('role', 'student'), DATE_SUB(NOW(), INTERVAL 6 HOUR)),
+  (@alya_student_id, 'submit_quiz', 'Mengirim kuis adaptif Gradien dan Grafik.', JSON_OBJECT('attempt_id', @alya_math_attempt_id, 'score', 92), DATE_SUB(NOW(), INTERVAL 1 DAY)),
+  (@raka_student_id, 'submit_quiz', 'Mengirim tes diagnostik AI.', JSON_OBJECT('attempt_id', @raka_diag_attempt_id, 'score', 50), DATE_SUB(NOW(), INTERVAL 3 DAY)),
+  (@nadia_student_id, 'view_material', 'Membuka materi Analisis Soal Cerita Linear.', JSON_OBJECT('material_id', @math_adv_material_id), DATE_SUB(NOW(), INTERVAL 2 DAY));
 
 INSERT INTO badges (school_id, name, description, icon, requirement)
 VALUES
-  (@default_school_id, 'Mastery Badge', 'Awarded when a student reaches advanced-level mastery.', 'mastery', 'Advanced level with high accuracy'),
-  (@default_school_id, 'Diagnostic Finisher', 'Awarded when a student completes the AI diagnostic test.', 'diagnostic', 'Complete the diagnostic test');
+  (@default_school_id, 'Pemula AI', 'Menyelesaikan aktivitas belajar pertama di EduSense AI.', 'sparkles', 'Login dan mulai satu materi.'),
+  (@default_school_id, 'Runtun 7 Hari', 'Aktif belajar minimal tujuh hari berturut-turut.', 'flame', 'Streak belajar minimal 7 hari.'),
+  (@default_school_id, 'Jago Kuis', 'Meraih akurasi minimal 80% pada kuis adaptif.', 'target', 'Accuracy rate minimal 80%.'),
+  (@default_school_id, 'Mastery Badge', 'Mencapai level advanced dengan akurasi tinggi.', 'award', 'Level advanced dan akurasi tinggi.'),
+  (@default_school_id, 'Diagnostic Finisher', 'Menyelesaikan tes diagnostik AI.', 'check-circle', 'Submit tes diagnostik.');
+
+SET @starter_badge_id = (SELECT id FROM badges WHERE school_id = @default_school_id AND name = 'Pemula AI');
+SET @streak_badge_id = (SELECT id FROM badges WHERE school_id = @default_school_id AND name = 'Runtun 7 Hari');
+SET @quiz_badge_id = (SELECT id FROM badges WHERE school_id = @default_school_id AND name = 'Jago Kuis');
+SET @mastery_badge_id = (SELECT id FROM badges WHERE school_id = @default_school_id AND name = 'Mastery Badge');
+SET @diagnostic_badge_id = (SELECT id FROM badges WHERE school_id = @default_school_id AND name = 'Diagnostic Finisher');
+
+INSERT INTO student_badges (school_id, student_id, badge_id, earned_at)
+VALUES
+  (@default_school_id, @alya_student_id, @starter_badge_id, DATE_SUB(NOW(), INTERVAL 9 DAY)),
+  (@default_school_id, @alya_student_id, @streak_badge_id, DATE_SUB(NOW(), INTERVAL 3 DAY)),
+  (@default_school_id, @alya_student_id, @quiz_badge_id, DATE_SUB(NOW(), INTERVAL 1 DAY)),
+  (@default_school_id, @alya_student_id, @diagnostic_badge_id, DATE_SUB(NOW(), INTERVAL 7 DAY)),
+  (@default_school_id, @raka_student_id, @starter_badge_id, DATE_SUB(NOW(), INTERVAL 3 DAY)),
+  (@default_school_id, @raka_student_id, @diagnostic_badge_id, DATE_SUB(NOW(), INTERVAL 3 DAY)),
+  (@default_school_id, @nadia_student_id, @starter_badge_id, DATE_SUB(NOW(), INTERVAL 15 DAY)),
+  (@default_school_id, @nadia_student_id, @streak_badge_id, DATE_SUB(NOW(), INTERVAL 8 DAY)),
+  (@default_school_id, @nadia_student_id, @mastery_badge_id, DATE_SUB(NOW(), INTERVAL 2 DAY));

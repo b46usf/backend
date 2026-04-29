@@ -165,7 +165,24 @@ const findStudentInterventionDetail = async (teacherId, schoolId, studentId, exe
   return rows[0] || null;
 };
 
+const createStudentInterventionLog = async (payload, executor = pool) => {
+  const [result] = await executor.execute(
+    `
+      INSERT INTO activity_logs (student_id, activity_type, description, metadata)
+      SELECT s.id, 'view_material', ?, JSON_OBJECT('teacher_id', ?, 'source', 'teacher_intervention')
+      FROM students s
+      WHERE s.id = ? AND s.school_id = ?
+    `,
+    [payload.message, payload.teacherId, payload.studentId, payload.schoolId],
+  );
+
+  return {
+    id: result.insertId,
+  };
+};
+
 module.exports = {
+  createStudentInterventionLog,
   findTeacherById,
   findTeacherByUserId,
   findTeacherClasses,

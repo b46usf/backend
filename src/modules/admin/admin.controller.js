@@ -46,9 +46,30 @@ const createSubject = asyncHandler(async (req, res) => {
   });
 });
 
+const importUsers = asyncHandler(async (req, res) => {
+  const result = await adminService.importUsers(req.user.schoolId, req.body.users);
+
+  return sendSuccess(res, {
+    statusCode: 201,
+    message: 'Users imported successfully',
+    data: result,
+  });
+});
+
+const resetUserPassword = asyncHandler(async (req, res) => {
+  const result = await adminService.resetUserPassword(req.user.schoolId, req.params.id, req.body.password);
+
+  return sendSuccess(res, {
+    message: 'User password reset successfully',
+    data: result,
+  });
+});
+
 module.exports = {
   createClass,
   createSubject,
+  importUsers,
   listClasses,
   listSubjects,
+  resetUserPassword,
 };

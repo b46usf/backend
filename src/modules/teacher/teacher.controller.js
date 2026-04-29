@@ -41,7 +41,23 @@ const getStudentIntervention = asyncHandler(async (req, res) => {
   });
 });
 
+const createStudentIntervention = asyncHandler(async (req, res) => {
+  const intervention = await teacherService.createStudentIntervention(
+    req.user.id,
+    req.user.schoolId,
+    req.params.studentId,
+    req.body,
+  );
+
+  return sendSuccess(res, {
+    statusCode: 201,
+    message: 'Student intervention logged successfully',
+    data: intervention,
+  });
+});
+
 module.exports = {
+  createStudentIntervention,
   getClassDashboard,
   getStudentIntervention,
   getTeacherById,
