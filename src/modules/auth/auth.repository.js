@@ -29,6 +29,15 @@ const findRoleByName = async (roleName, executor = pool) => {
   return rows[0] || null;
 };
 
+const findFirstClass = async (schoolId, executor = pool) => {
+  const [rows] = await executor.execute(
+    'SELECT id FROM classes WHERE school_id = ? ORDER BY grade_level ASC, name ASC LIMIT 1',
+    [schoolId],
+  );
+
+  return rows[0] || null;
+};
+
 const findUserByEmail = async (email, executor = pool) => {
   const emailVariants = encryptTextVariants(email);
   const [rows] = await executor.execute(
@@ -134,6 +143,7 @@ module.exports = {
   createStudentProfile,
   createTeacherProfile,
   findRoleByName,
+  findFirstClass,
   findUserByEmail,
   findUserById,
   updateUserStatus,

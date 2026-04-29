@@ -53,7 +53,7 @@ const importUsers = (schoolId, users) =>
           roleId: roleRecord.id,
           name: item.name,
           email: encryptText(item.email),
-          password: await hashPassword(encryptText(item.password || 'demo12345')),
+          password: await hashPassword(encryptText(item.password)),
           avatar: item.name.split(' ').map((part) => part[0]).join('').slice(0, 2).toUpperCase(),
           status: USER_STATUSES.ACTIVE,
         },

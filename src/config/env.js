@@ -36,7 +36,7 @@ const envSchema = z.object({
   CRYPTO_ALGORITHM: z.enum(['aes-256-cbc']).default('aes-256-cbc'),
   CRYPTO_KEY: z.string().default(''),
   CRYPTO_IV: z.string().default(''),
-  API_RESPONSE_ENCRYPTION_ENABLED: booleanFromEnv(true),
+  API_RESPONSE_ENCRYPTION_ENABLED: booleanFromEnv(false),
   BCRYPT_SALT_ROUNDS: z.coerce.number().int().min(8).max(15).default(10),
   DB_HOST: z.string().default('127.0.0.1'),
   DB_PORT: z.coerce.number().int().positive().default(3306),

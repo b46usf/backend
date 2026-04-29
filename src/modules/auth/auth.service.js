@@ -23,8 +23,21 @@ const sanitizeAuthUser = (user) => ({
   updated_at: user.updated_at,
 });
 
-const getInitialStatusForRole = (role) =>
-  [ROLES.STUDENT, ROLES.TEACHER].includes(role) ? USER_STATUSES.INACTIVE : USER_STATUSES.ACTIVE;
+const getInitialStatusForRole = () => USER_STATUSES.INACTIVE;
+
+const resolveStudentClassId = async (schoolId, classId, connection) => {
+  if (classId) {
+    return classId;
+  }
+
+  const firstClass = await authRepository.findFirstClass(schoolId, connection);
+
+  if (!firstClass) {
+    throw new BadRequestError('At least one class is required before student registration');
+  }
+
+  return firstClass.id;
+};
 
 const createRoleProfile = async (role, userId, payload, connection) => {
   if (role === ROLES.STUDENT) {
@@ -36,7 +49,7 @@ const createRoleProfile = async (role, userId, payload, connection) => {
       {
         userId,
         schoolId: payload.schoolId,
-        classId: payload.classId,
+        classId: await resolveStudentClassId(payload.schoolId, payload.classId, connection),
         studentNumber: payload.studentNumber,
       },
       connection,

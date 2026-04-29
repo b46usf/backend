@@ -14,7 +14,7 @@ const registerSchema = {
     name: z.string().min(3).max(120),
     email: z.string().email(),
     password: z.string().min(8).max(72),
-    role: z.enum([ROLES.ADMIN, ROLES.TEACHER, ROLES.STUDENT]).default(ROLES.STUDENT),
+    role: z.enum([ROLES.TEACHER, ROLES.STUDENT]).default(ROLES.STUDENT),
     avatar: z.string().max(255).optional(),
     classId: z.coerce.number().int().positive().optional(),
     studentNumber: z.string().max(50).optional(),

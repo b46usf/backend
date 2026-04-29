@@ -31,7 +31,7 @@ const importUsersSchema = {
       z.object({
         name: z.string().min(3).max(120),
         email: z.string().email(),
-        password: z.string().min(8).max(72).default('demo12345'),
+        password: z.string().min(8).max(72),
         role: z.enum([ROLES.TEACHER, ROLES.STUDENT]).default(ROLES.STUDENT),
         classId: z.coerce.number().int().positive().optional(),
         studentNumber: z.string().max(50).optional(),
