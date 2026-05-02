@@ -515,10 +515,11 @@ CREATE TABLE student_badges (
 --   admin@edusense.ai / demo12345
 --   teacher@edusense.ai / demo12345
 --   student@edusense.ai / demo12345
--- User emails and password below are encrypted/hashed for the default backend .env.
+-- User emails are plain in this static snapshot so login lookup still works without regenerating encrypted values.
+-- The password hash below is for the default backend .env.
 -- Run `npm run db:seed` from backend to regenerate richer demo data with the active .env values.
 
-SET @demo_password_hash = '$2b$10$ltaXjGC7.iYY1j1bOn5ig.WljBrSixN/B.N8sYI3IwDZXPT343aiy';
+SET @demo_password_hash = '$2b$10$UwMhah30IXjMQh9gdYuXdeyVI25JiyXQTWhq5uzzNfqunVh91qxh.';
 
 INSERT INTO roles (name)
 VALUES ('admin'), ('teacher'), ('student');
@@ -563,62 +564,293 @@ VALUES
 
 INSERT INTO users (school_id, role_id, name, email, password, avatar, status)
 VALUES
-  (@default_school_id, @admin_role_id, 'Admin Sekolah', 'enc:v1:BNRzxOwTZVOQxLKMBskkW+s5KqBBFu3fDIKbAHngxfo=', @demo_password_hash, 'AS', 'active'),
-  (@default_school_id, @teacher_role_id, 'Bu Rani Wijaya', 'enc:v1:ei0rv0ot+8gPo7uhuowQP8yXg0QNFKnVLj+y0ZRIL6M=', @demo_password_hash, 'RW', 'active'),
-  (@default_school_id, @teacher_role_id, 'Pak Bima Santoso', 'enc:v1:rx+aEIYDv2S2kfFr4flpTyIKfhRa6A9rzchKTE4s7ec=', @demo_password_hash, 'BS', 'active'),
-  (@default_school_id, @student_role_id, 'Alya Prameswari', 'enc:v1:peU79TdKBFk3lxZ4J5eKIwNywbgmEPLei5WJ69DQNy0=', @demo_password_hash, 'AP', 'active'),
-  (@default_school_id, @student_role_id, 'Raka Putra', 'enc:v1:yfCRkvnrUjzD5XSV5/b/oH8hzmuCh4AQv/R7+CwYBzI=', @demo_password_hash, 'RP', 'active'),
-  (@default_school_id, @student_role_id, 'Nadia Zahra', 'enc:v1:5V+udU25ZRvzFC24YicOvq9NRfUcwSssiw2Ged7Mwak=', @demo_password_hash, 'NZ', 'active');
+  (@default_school_id, @admin_role_id, 'Admin Sekolah', 'admin@edusense.ai', @demo_password_hash, 'AS', 'active'),
+  (@default_school_id, @teacher_role_id, 'ROSYIDAH ROHMAH, S.Pd', 'teacher.k1@edusense.ai', @demo_password_hash, 'RR', 'active'),
+  (@default_school_id, @teacher_role_id, 'Maharani Gita Kusumawardani, S.Pd', 'teacher.g2@edusense.ai', @demo_password_hash, 'MG', 'active'),
+  (@default_school_id, @teacher_role_id, 'Eva Krisnawati, S.Pd', 'teacher.e3@edusense.ai', @demo_password_hash, 'EK', 'active'),
+  (@default_school_id, @teacher_role_id, 'RAHMAD ARIF, S.Pd', 'teacher.f4@edusense.ai', @demo_password_hash, 'RA', 'active'),
+  (@default_school_id, @teacher_role_id, 'AGUS PRIJATMOKO, S.Pd, M.M', 'teacher.e5@edusense.ai', @demo_password_hash, 'AP', 'active'),
+  (@default_school_id, @teacher_role_id, 'YANU INDRIYATI, M.Pd', 'teacher.g6@edusense.ai', @demo_password_hash, 'YI', 'active'),
+  (@default_school_id, @teacher_role_id, 'Dra. RIMA RAHAYU, M.M', 'teacher.b7@edusense.ai', @demo_password_hash, 'DR', 'active'),
+  (@default_school_id, @teacher_role_id, 'IWAN DILIANTO, S.Psi', 'teacher.u8@edusense.ai', @demo_password_hash, 'ID', 'active'),
+  (@default_school_id, @teacher_role_id, 'IDHA HARIANI, S.Pd', 'teacher.g9@edusense.ai', @demo_password_hash, 'IH', 'active'),
+  (@default_school_id, @teacher_role_id, 'ERMIYANTUN, S.Pd', 'teacher.u10@edusense.ai', @demo_password_hash, 'ES', 'active'),
+  (@default_school_id, @teacher_role_id, 'Dra. NURCAHYATI', 'teacher.k11@edusense.ai', @demo_password_hash, 'DN', 'active'),
+  (@default_school_id, @teacher_role_id, 'DARMO, S.Pd', 'teacher.u12@edusense.ai', @demo_password_hash, 'DS', 'active'),
+  (@default_school_id, @teacher_role_id, 'YULIANTI, S.Pd', 'teacher.c13@edusense.ai', @demo_password_hash, 'YS', 'active'),
+  (@default_school_id, @teacher_role_id, 'IKA APRILIA NINDYASARI. A., S.Pd', 'teacher.m14@edusense.ai', @demo_password_hash, 'IA', 'active'),
+  (@default_school_id, @teacher_role_id, 'DIAN AYU A., S.Psi', 'teacher.u15@edusense.ai', @demo_password_hash, 'DA', 'active'),
+  (@default_school_id, @teacher_role_id, 'SRI SULASTRI YULIANA, S.Pd', 'teacher.j16@edusense.ai', @demo_password_hash, 'SS', 'active'),
+  (@default_school_id, @teacher_role_id, 'MUCHAMMAD FARUQ, S.Pd.I', 'teacher.a17@edusense.ai', @demo_password_hash, 'MF', 'active'),
+  (@default_school_id, @teacher_role_id, 'SUPRAPTI, S.Pd', 'teacher.i18@edusense.ai', @demo_password_hash, 'SS', 'active'),
+  (@default_school_id, @teacher_role_id, 'YUSWANTO PURNOMO, S.Pd.I', 'teacher.a19@edusense.ai', @demo_password_hash, 'YP', 'active'),
+  (@default_school_id, @teacher_role_id, 'FATIMATUS ZAHROH, S.Pd,M.M', 'teacher.i20@edusense.ai', @demo_password_hash, 'FZ', 'active'),
+  (@default_school_id, @teacher_role_id, 'ROIS NURIL ALAM ZEIN, S.Pd', 'teacher.f21@edusense.ai', @demo_password_hash, 'RN', 'active'),
+  (@default_school_id, @teacher_role_id, 'DENNY RATNASARI, S.Pd', 'teacher.d22@edusense.ai', @demo_password_hash, 'DR', 'active'),
+  (@default_school_id, @teacher_role_id, 'DENNY RATNASARI, S.Pd', 'teacher.p22@edusense.ai', @demo_password_hash, 'DR', 'active'),
+  (@default_school_id, @teacher_role_id, 'Dra. MARIA ULFAH', 'teacher.l23@edusense.ai', @demo_password_hash, 'DM', 'active'),
+  (@default_school_id, @teacher_role_id, 'RETNO DWI KARTIKA.L., S.Pd', 'teacher.b24@edusense.ai', @demo_password_hash, 'RD', 'active'),
+  (@default_school_id, @teacher_role_id, 'KRISTIN KURNIA WATI, S.Pd', 'teacher.c25@edusense.ai', @demo_password_hash, 'KK', 'active'),
+  (@default_school_id, @teacher_role_id, 'JENNI HARJANTI, S.Pd Kr', 'teacher.a26@edusense.ai', @demo_password_hash, 'JH', 'active'),
+  (@default_school_id, @teacher_role_id, 'SITI KHOTIJAH, S.Pd', 'teacher.k27@edusense.ai', @demo_password_hash, 'SK', 'active'),
+  (@default_school_id, @teacher_role_id, 'IDAHLYA MUGIRAHAYU, S.Pd', 'teacher.k28@edusense.ai', @demo_password_hash, 'IM', 'active'),
+  (@default_school_id, @teacher_role_id, 'SITI KHUMAIROH SARAGIH, S.S', 'teacher.e29@edusense.ai', @demo_password_hash, 'SK', 'active'),
+  (@default_school_id, @teacher_role_id, 'EKA RIZKI RAHMAWATI, S.Sos, M.Sosio', 'teacher.n30@edusense.ai', @demo_password_hash, 'ER', 'active'),
+  (@default_school_id, @teacher_role_id, 'INTAN  AKMALIA, S.Pd', 'teacher.t31@edusense.ai', @demo_password_hash, 'IA', 'active'),
+  (@default_school_id, @teacher_role_id, 'INTAN  AKMALIA, S.Pd', 'teacher.q31@edusense.ai', @demo_password_hash, 'IA', 'active'),
+  (@default_school_id, @teacher_role_id, 'ROSITA DWI DIAHWARI, S.Pd', 'teacher.g32@edusense.ai', @demo_password_hash, 'RD', 'active'),
+  (@default_school_id, @teacher_role_id, 'DINDA TRIANA, S.Pd', 'teacher.i33@edusense.ai', @demo_password_hash, 'DT', 'active'),
+  (@default_school_id, @teacher_role_id, 'DINDA TRIANA, S.Pd', 'teacher.o33@edusense.ai', @demo_password_hash, 'DT', 'active'),
+  (@default_school_id, @teacher_role_id, 'I WAYAN S, S.PdH', 'teacher.a34@edusense.ai', @demo_password_hash, 'IW', 'active'),
+  (@default_school_id, @teacher_role_id, 'DHUHROTUL KHOIRIYAH, S.Pd', 'teacher.a35@edusense.ai', @demo_password_hash, 'DK', 'active'),
+  (@default_school_id, @teacher_role_id, 'DHUHROTUL KHOIRIYAH, S.Pd', 'teacher.b35@edusense.ai', @demo_password_hash, 'DK', 'active'),
+  (@default_school_id, @teacher_role_id, 'YOSEPH LIDI, S.FIL', 'teacher.a36@edusense.ai', @demo_password_hash, 'YL', 'active'),
+  (@default_school_id, @teacher_role_id, 'ROSA RAMADHAN, S.Pd', 'teacher.r37@edusense.ai', @demo_password_hash, 'RR', 'active'),
+  (@default_school_id, @teacher_role_id, 'ENGGAR SUSTIADI PRADANA, S.Pd', 'teacher.f38@edusense.ai', @demo_password_hash, 'ES', 'active'),
+  (@default_school_id, @teacher_role_id, 'ANGELICA MAYLANI PUTRI, S.Pd', 'teacher.a39@edusense.ai', @demo_password_hash, 'AM', 'active'),
+  (@default_school_id, @teacher_role_id, 'GUNTUR AJIE PANGESTU, S.Pd', 'teacher.m40@edusense.ai', @demo_password_hash, 'GA', 'active'),
+  (@default_school_id, @teacher_role_id, 'INDAH PUTRI MAULIDYA SARI, S.Pd', 'teacher.h41@edusense.ai', @demo_password_hash, 'IP', 'active'),
+  (@default_school_id, @teacher_role_id, 'BAGUS FAROUKTIAWAN, S.Kom', 'teacher@edusense.ai', @demo_password_hash, 'BF', 'active'),
+  (@default_school_id, @teacher_role_id, 'DWI NOVIAN AGUSTIN, S.PD', 'teacher.e43@edusense.ai', @demo_password_hash, 'DN', 'active'),
+  (@default_school_id, @teacher_role_id, 'NANDA TRY HASTUTI,S.Pd', 'teacher.j44@edusense.ai', @demo_password_hash, 'NT', 'active'),
+  (@default_school_id, @teacher_role_id, 'NUR LAILIL APRILIA, S.Pd', 'teacher.j45@edusense.ai', @demo_password_hash, 'NL', 'active'),
+  (@default_school_id, @teacher_role_id, 'NUR LAILIL APRILIA, S.Pd', 'teacher.s45@edusense.ai', @demo_password_hash, 'NL', 'active'),
+  (@default_school_id, @teacher_role_id, 'DHELLA ROCHMATUL.M,S.Pd', 'teacher.h46@edusense.ai', @demo_password_hash, 'DR', 'active'),
+  (@default_school_id, @teacher_role_id, 'ELLSA NATASHA.B, M.Pd', 'teacher.g47@edusense.ai', @demo_password_hash, 'EN', 'active'),
+  (@default_school_id, @teacher_role_id, 'LAURA WIDYA P., S.Pd', 'teacher.g48@edusense.ai', @demo_password_hash, 'LW', 'active'),
+  (@default_school_id, @teacher_role_id, 'FRISCA DANI AURORA.U,S.Pd', 'teacher.l49@edusense.ai', @demo_password_hash, 'FD', 'active'),
+  (@default_school_id, @teacher_role_id, 'SINDY DWI JAYANTI,M.Pd.Gr', 'teacher.d50@edusense.ai', @demo_password_hash, 'SD', 'active'),
+  (@default_school_id, @teacher_role_id, 'M. YUSUF FAIZAL AUFA,S.Sos', 'teacher.n51@edusense.ai', @demo_password_hash, 'MY', 'active'),
+  (@default_school_id, @teacher_role_id, 'M. YUSUF FAIZAL AUFA,S.Sos', 'teacher.t51@edusense.ai', @demo_password_hash, 'MY', 'active'),
+  (@default_school_id, @teacher_role_id, 'ARLYNDA WIDYA APSARI, S.Pd', 'teacher.i52@edusense.ai', @demo_password_hash, 'AW', 'active'),
+  (@default_school_id, @teacher_role_id, 'MIFTAHUL JANNAH, S.SN', 'teacher.m53@edusense.ai', @demo_password_hash, 'MJ', 'active'),
+  (@default_school_id, @teacher_role_id, 'MIFTAHUL JANNAH, S.SN', 'teacher.s53@edusense.ai', @demo_password_hash, 'MJ', 'active'),
+  (@default_school_id, @teacher_role_id, 'DIAN INDRI PRATIWI, S.Kel', 'teacher.o54@edusense.ai', @demo_password_hash, 'DI', 'active'),
+  (@default_school_id, @teacher_role_id, 'MOHAMMAD ASIKIN', 'teacher.e55@edusense.ai', @demo_password_hash, 'MA', 'active'),
+  (@default_school_id, @teacher_role_id, 'OTY MEIGAN, S.Pd', 'teacher.c56@edusense.ai', @demo_password_hash, 'OM', 'active'),
+  (@default_school_id, @teacher_role_id, 'NESA AYU DINA, M.Pd', 'teacher.g57@edusense.ai', @demo_password_hash, 'NA', 'active'),
+  (@default_school_id, @teacher_role_id, 'BIMANTARA YUNANDI P., S.Pd', 'teacher.f58@edusense.ai', @demo_password_hash, 'BY', 'active'),
+  (@default_school_id, @teacher_role_id, 'CYNTIA PUTRI, S.Pd', 'teacher.c59@edusense.ai', @demo_password_hash, 'CP', 'active'),
+  (@default_school_id, @teacher_role_id, 'MUHAMMAD ZAINAL ARIFIN, S.Pd', 'teacher.h60@edusense.ai', @demo_password_hash, 'MZ', 'active'),
+  (@default_school_id, @teacher_role_id, 'ACHMAD FIRMANDA DWIPUTRA, S.Pd', 'teacher.d61@edusense.ai', @demo_password_hash, 'AF', 'active'),
+  (@default_school_id, @teacher_role_id, 'Karana Yankumara, S.pd', 'teacher.l62@edusense.ai', @demo_password_hash, 'KY', 'active'),
+  (@default_school_id, @teacher_role_id, 'Karana Yankumara, S.pd', 'teacher.b62@edusense.ai', @demo_password_hash, 'KY', 'active'),
+  (@default_school_id, @teacher_role_id, 'LATIFAH HANUN, S.Pd', 'teacher.d63@edusense.ai', @demo_password_hash, 'LH', 'active'),
+  (@default_school_id, @student_role_id, 'ANANDHITA SYAKIRA HIDAYAT', 'student@edusense.ai', @demo_password_hash, 'AS', 'active'),
+  (@default_school_id, @student_role_id, 'ANISA MULIA', 'student.13518@edusense.ai', @demo_password_hash, 'AM', 'active'),
+  (@default_school_id, @student_role_id, 'AQBIEL JUAND DWIRIKA RIZKI RAMADHAN', 'student.13523@edusense.ai', @demo_password_hash, 'AJ', 'active'),
+  (@default_school_id, @student_role_id, 'ARIES INDRA PRAKOSO', 'student.13528@edusense.ai', @demo_password_hash, 'AI', 'active'),
+  (@default_school_id, @student_role_id, 'BERNESSA RAHADATUL''AISY VIRBARA', 'student.13561@edusense.ai', @demo_password_hash, 'BR', 'active'),
+  (@default_school_id, @student_role_id, 'DHEA ANANDASYAFIRA', 'student.13596@edusense.ai', @demo_password_hash, 'DA', 'active'),
+  (@default_school_id, @student_role_id, 'DHEA LUCITA SABRINA SAKHI', 'student.13597@edusense.ai', @demo_password_hash, 'DL', 'active'),
+  (@default_school_id, @student_role_id, 'FANDY FITRIYANTO', 'student.13627@edusense.ai', @demo_password_hash, 'FF', 'active'),
+  (@default_school_id, @student_role_id, 'FAIRUS CINTA ALIFIU FAHAMSA', 'student.13637@edusense.ai', @demo_password_hash, 'FC', 'active'),
+  (@default_school_id, @student_role_id, 'FATIH MUTTAQIN AZKA', 'student.13640@edusense.ai', @demo_password_hash, 'FM', 'active'),
+  (@default_school_id, @student_role_id, 'FEBRIAN IMANUEL HETI PRATAMA', 'student.13642@edusense.ai', @demo_password_hash, 'FI', 'active'),
+  (@default_school_id, @student_role_id, 'GERALD ARVIN A', 'student.13652@edusense.ai', @demo_password_hash, 'GA', 'active'),
+  (@default_school_id, @student_role_id, 'GREVALDIO PUTRA ALEXA EVANO', 'student.13658@edusense.ai', @demo_password_hash, 'GP', 'active'),
+  (@default_school_id, @student_role_id, 'HAFIZH KHAIZURAN FAUZI', 'student.13659@edusense.ai', @demo_password_hash, 'HK', 'active'),
+  (@default_school_id, @student_role_id, 'HANA AATIKAH JAUZA', 'student.13660@edusense.ai', @demo_password_hash, 'HA', 'active'),
+  (@default_school_id, @student_role_id, 'INGGRID NIKITA PRASETYA', 'student.13667@edusense.ai', @demo_password_hash, 'IN', 'active'),
+  (@default_school_id, @student_role_id, 'JETHRO ATA ALVAREAN', 'student.13680@edusense.ai', @demo_password_hash, 'JA', 'active'),
+  (@default_school_id, @student_role_id, 'JOY ABIMANYU HAPY PUTRA', 'student.13683@edusense.ai', @demo_password_hash, 'JA', 'active'),
+  (@default_school_id, @student_role_id, 'KAFKA XAVIER HAZZA PRAMONO', 'student.13684@edusense.ai', @demo_password_hash, 'KX', 'active'),
+  (@default_school_id, @student_role_id, 'KANAYA KARIN RUBIAWAN', 'student.13685@edusense.ai', @demo_password_hash, 'KK', 'active'),
+  (@default_school_id, @student_role_id, 'KARIN VANESSA KRISDIVA SIBURIAN', 'student.13686@edusense.ai', @demo_password_hash, 'KV', 'active'),
+  (@default_school_id, @student_role_id, 'KENZIE HAFIZ SUSANTO', 'student.13693@edusense.ai', @demo_password_hash, 'KH', 'active'),
+  (@default_school_id, @student_role_id, 'MONICA DEWI SANTOSO', 'student.13739@edusense.ai', @demo_password_hash, 'MD', 'active'),
+  (@default_school_id, @student_role_id, 'MUCHAMMAD FADHIL TORIQ', 'student.13718@edusense.ai', @demo_password_hash, 'MF', 'active'),
+  (@default_school_id, @student_role_id, 'MUHAMMAD AKHTAR RAZAAN', 'student.13742@edusense.ai', @demo_password_hash, 'MA', 'active'),
+  (@default_school_id, @student_role_id, 'MUHAMMAD BRAHMANA ADI', 'student.13745@edusense.ai', @demo_password_hash, 'MB', 'active'),
+  (@default_school_id, @student_role_id, 'MUHAMMAD FADHIL WAFI', 'student.13748@edusense.ai', @demo_password_hash, 'MF', 'active'),
+  (@default_school_id, @student_role_id, 'MUHAMMAD IKHSAN AL AKBAR', 'student.13754@edusense.ai', @demo_password_hash, 'MI', 'active'),
+  (@default_school_id, @student_role_id, 'MUHAMMAD RIKO SETYA WIRADINATA', 'student.13758@edusense.ai', @demo_password_hash, 'MR', 'active'),
+  (@default_school_id, @student_role_id, 'MUTIARA SANIYYAH', 'student.13763@edusense.ai', @demo_password_hash, 'MS', 'active'),
+  (@default_school_id, @student_role_id, 'NADHIEF FATHAN ARRAFIF', 'student.13768@edusense.ai', @demo_password_hash, 'NF', 'active'),
+  (@default_school_id, @student_role_id, 'NAFISAH DZATIR RAJWA', 'student.13778@edusense.ai', @demo_password_hash, 'ND', 'active'),
+  (@default_school_id, @student_role_id, 'RAFASYAH MADANA ARKADIPA', 'student.13824@edusense.ai', @demo_password_hash, 'RM', 'active'),
+  (@default_school_id, @student_role_id, 'REZA EMMERALDI ARIANTO', 'student.13841@edusense.ai', @demo_password_hash, 'RE', 'active'),
+  (@default_school_id, @student_role_id, 'VELISA KHALILAH NISRINA', 'student.13885@edusense.ai', @demo_password_hash, 'VK', 'active'),
+  (@default_school_id, @student_role_id, 'ZAKI RAHMAT FAHREZI', 'student.13895@edusense.ai', @demo_password_hash, 'ZR', 'active');
 
 SET @admin_user_id = (SELECT id FROM users WHERE name = 'Admin Sekolah' AND school_id = @default_school_id);
-SET @rani_user_id = (SELECT id FROM users WHERE name = 'Bu Rani Wijaya' AND school_id = @default_school_id);
-SET @bima_user_id = (SELECT id FROM users WHERE name = 'Pak Bima Santoso' AND school_id = @default_school_id);
-SET @alya_user_id = (SELECT id FROM users WHERE name = 'Alya Prameswari' AND school_id = @default_school_id);
-SET @raka_user_id = (SELECT id FROM users WHERE name = 'Raka Putra' AND school_id = @default_school_id);
-SET @nadia_user_id = (SELECT id FROM users WHERE name = 'Nadia Zahra' AND school_id = @default_school_id);
 
 INSERT INTO teachers (school_id, user_id, employee_number, position, specialization)
-VALUES
-  (@default_school_id, @rani_user_id, 'NIP-DEMO-001', 'teacher', 'Matematika'),
-  (@default_school_id, @bima_user_id, 'NIP-DEMO-002', 'teacher', 'Fisika');
-
-SET @rani_teacher_id = (SELECT id FROM teachers WHERE user_id = @rani_user_id);
-SET @bima_teacher_id = (SELECT id FROM teachers WHERE user_id = @bima_user_id);
+SELECT @default_school_id, u.id, 'K1', 'teacher', 'FISIKA' FROM users u WHERE u.email = 'teacher.k1@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'G2', 'teacher', 'MATEMATIKA' FROM users u WHERE u.email = 'teacher.g2@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'E3', 'teacher', 'BAHASA INGGRIS' FROM users u WHERE u.email = 'teacher.e3@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'F4', 'teacher', 'PENDIDIKAN JASMANI OLAHRAGA KEBUGARAN' FROM users u WHERE u.email = 'teacher.f4@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'E5', 'teacher', 'BAHASA INGGRIS' FROM users u WHERE u.email = 'teacher.e5@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'G6', 'teacher', 'MATEMATIKA' FROM users u WHERE u.email = 'teacher.g6@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'B7', 'teacher', 'PENDIDIKAN KEWARGANEGARAAN' FROM users u WHERE u.email = 'teacher.b7@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'U8', 'teacher', 'BIMBINGAN KONSELING' FROM users u WHERE u.email = 'teacher.u8@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'G9', 'teacher', 'MATEMATIKA' FROM users u WHERE u.email = 'teacher.g9@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'U10', 'teacher', 'BIMBINGAN KONSELING' FROM users u WHERE u.email = 'teacher.u10@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'K11', 'teacher', 'EKONOMI' FROM users u WHERE u.email = 'teacher.k11@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'U12', 'teacher', 'BIMBINGAN KONSELING' FROM users u WHERE u.email = 'teacher.u12@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'C13', 'teacher', 'BAHASA INDONESIA' FROM users u WHERE u.email = 'teacher.c13@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'M14', 'teacher', 'SENI' FROM users u WHERE u.email = 'teacher.m14@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'U15', 'teacher', 'BIMBINGAN KONSELING' FROM users u WHERE u.email = 'teacher.u15@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'J16', 'teacher', 'KIMIA' FROM users u WHERE u.email = 'teacher.j16@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'A17', 'teacher', 'PENDIDIKAN AGAMA ISLAM' FROM users u WHERE u.email = 'teacher.a17@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'I18', 'teacher', 'BIOLOGI' FROM users u WHERE u.email = 'teacher.i18@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'A19', 'teacher', 'PENDIDIKAN AGAMA ISLAM' FROM users u WHERE u.email = 'teacher.a19@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'I20', 'teacher', 'BIOLOGI' FROM users u WHERE u.email = 'teacher.i20@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'F21', 'teacher', 'PENDIDIKAN JASMANI OLAHRAGA KEBUGARAN' FROM users u WHERE u.email = 'teacher.f21@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'D22', 'teacher', 'SEJARAH' FROM users u WHERE u.email = 'teacher.d22@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'P22', 'teacher', 'ANTROPOLOGI' FROM users u WHERE u.email = 'teacher.p22@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'L23', 'teacher', 'GEOGRAFI' FROM users u WHERE u.email = 'teacher.l23@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'B24', 'teacher', 'PENDIDIKAN KEWARGANEGARAAN' FROM users u WHERE u.email = 'teacher.b24@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'C25', 'teacher', 'BAHASA INDONESIA' FROM users u WHERE u.email = 'teacher.c25@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'A26', 'teacher', 'PENDIDIKAN AGAMA KRISTEN' FROM users u WHERE u.email = 'teacher.a26@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'K27', 'teacher', 'EKONOMI' FROM users u WHERE u.email = 'teacher.k27@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'K28', 'teacher', 'EKONOMI' FROM users u WHERE u.email = 'teacher.k28@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'E29', 'teacher', 'BAHASA INGGRIS' FROM users u WHERE u.email = 'teacher.e29@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'N30', 'teacher', 'SOSIOLOGI' FROM users u WHERE u.email = 'teacher.n30@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'T31', 'teacher', 'INFORMATIKA' FROM users u WHERE u.email = 'teacher.t31@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'Q31', 'teacher', 'MANDARIN' FROM users u WHERE u.email = 'teacher.q31@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'G32', 'teacher', 'MATEMATIKA' FROM users u WHERE u.email = 'teacher.g32@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'I33', 'teacher', 'BIOLOGI' FROM users u WHERE u.email = 'teacher.i33@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'O33', 'teacher', 'BAHARI' FROM users u WHERE u.email = 'teacher.o33@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'A34', 'teacher', 'PENDIDIKAN AGAMA HINDU' FROM users u WHERE u.email = 'teacher.a34@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'A35', 'teacher', 'PENDIDIKAN AGAMA ISLAM' FROM users u WHERE u.email = 'teacher.a35@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'B35', 'teacher', 'PENDIDIKAN KEWARGANEGARAAN' FROM users u WHERE u.email = 'teacher.b35@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'A36', 'teacher', 'PENDIDIKAN AGAMA KATHOLIK' FROM users u WHERE u.email = 'teacher.a36@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'R37', 'teacher', 'BAHASA JAWA' FROM users u WHERE u.email = 'teacher.r37@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'F38', 'teacher', 'PENDIDIKAN JASMANI OLAHRAGA KEBUGARAN' FROM users u WHERE u.email = 'teacher.f38@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'A39', 'teacher', 'PENDIDIKAN AGAMA ISLAM' FROM users u WHERE u.email = 'teacher.a39@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'M40', 'teacher', 'SENI' FROM users u WHERE u.email = 'teacher.m40@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'H41', 'teacher', 'FISIKA' FROM users u WHERE u.email = 'teacher.h41@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'T42', 'teacher', 'INFORMATIKA' FROM users u WHERE u.email = 'teacher@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'E43', 'teacher', 'BAHASA INGGRIS' FROM users u WHERE u.email = 'teacher.e43@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'J44', 'teacher', 'KIMIA' FROM users u WHERE u.email = 'teacher.j44@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'J45', 'teacher', 'KIMIA' FROM users u WHERE u.email = 'teacher.j45@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'S45', 'teacher', 'PENDIDIKAN KEWIRAUSAHAAN' FROM users u WHERE u.email = 'teacher.s45@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'H46', 'teacher', 'FISIKA' FROM users u WHERE u.email = 'teacher.h46@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'G47', 'teacher', 'MATEMATIKA' FROM users u WHERE u.email = 'teacher.g47@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'G48', 'teacher', 'MATEMATIKA' FROM users u WHERE u.email = 'teacher.g48@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'L49', 'teacher', 'GEOGRAFI' FROM users u WHERE u.email = 'teacher.l49@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'D50', 'teacher', 'SEJARAH' FROM users u WHERE u.email = 'teacher.d50@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'N51', 'teacher', 'SOSIOLOGI' FROM users u WHERE u.email = 'teacher.n51@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'T51', 'teacher', 'INFORMATIKA' FROM users u WHERE u.email = 'teacher.t51@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'I52', 'teacher', 'BIOLOGI' FROM users u WHERE u.email = 'teacher.i52@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'M53', 'teacher', 'SENI' FROM users u WHERE u.email = 'teacher.m53@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'S53', 'teacher', 'PENDIDIKAN KEWIRAUSAHAAN' FROM users u WHERE u.email = 'teacher.s53@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'O54', 'teacher', 'BAHARI' FROM users u WHERE u.email = 'teacher.o54@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'E55', 'teacher', 'BAHASA INGGRIS' FROM users u WHERE u.email = 'teacher.e55@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'C56', 'teacher', 'BAHASA INDONESIA' FROM users u WHERE u.email = 'teacher.c56@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'G57', 'teacher', 'MATEMATIKA' FROM users u WHERE u.email = 'teacher.g57@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'F58', 'teacher', 'PENDIDIKAN JASMANI OLAHRAGA KEBUGARAN' FROM users u WHERE u.email = 'teacher.f58@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'C59', 'teacher', 'BAHASA INDONESIA' FROM users u WHERE u.email = 'teacher.c59@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'H60', 'teacher', 'FISIKA' FROM users u WHERE u.email = 'teacher.h60@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'D61', 'teacher', 'SEJARAH' FROM users u WHERE u.email = 'teacher.d61@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'L62', 'teacher', 'GEOGRAFI' FROM users u WHERE u.email = 'teacher.l62@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'B62', 'teacher', 'PENDIDIKAN KEWARGANEGARAAN' FROM users u WHERE u.email = 'teacher.b62@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, 'D63', 'teacher', 'SEJARAH' FROM users u WHERE u.email = 'teacher.d63@edusense.ai';
 
 INSERT INTO classes (school_id, homeroom_teacher_id, name, grade_level, academic_year)
-VALUES
-  (@default_school_id, @rani_teacher_id, 'XI IPA 2', 'XI', '2025/2026'),
-  (@default_school_id, @bima_teacher_id, 'XI IPA 1', 'XI', '2025/2026');
+SELECT @default_school_id, t.id, 'xi-c1', 'XI', '2025/2026'
+FROM teachers t
+WHERE t.school_id = @default_school_id AND t.employee_number = 'T42';
 
-SET @xi_ipa_2_id = (SELECT id FROM classes WHERE school_id = @default_school_id AND name = 'XI IPA 2');
-SET @xi_ipa_1_id = (SELECT id FROM classes WHERE school_id = @default_school_id AND name = 'XI IPA 1');
+SET @xi_c1_id = (SELECT id FROM classes WHERE school_id = @default_school_id AND name = 'xi-c1');
 
 INSERT INTO students
   (school_id, user_id, class_id, student_number, current_level, risk_status, total_score, streak_days)
-VALUES
-  (@default_school_id, @alya_user_id, @xi_ipa_2_id, 'SIS-DEMO-001', 'intermediate', 'safe', 428, 12),
-  (@default_school_id, @raka_user_id, @xi_ipa_2_id, 'SIS-DEMO-002', 'basic', 'warning', 196, 3),
-  (@default_school_id, @nadia_user_id, @xi_ipa_1_id, 'SIS-DEMO-003', 'advanced', 'safe', 612, 18);
-
-SET @alya_student_id = (SELECT id FROM students WHERE user_id = @alya_user_id);
-SET @raka_student_id = (SELECT id FROM students WHERE user_id = @raka_user_id);
-SET @nadia_student_id = (SELECT id FROM students WHERE user_id = @nadia_user_id);
+SELECT @default_school_id, u.id, @xi_c1_id, '13508', 'intermediate', 'safe', 428, 12 FROM users u WHERE u.email = 'student@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, @xi_c1_id, '13518', 'basic', 'warning', 196, 3 FROM users u WHERE u.email = 'student.13518@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, @xi_c1_id, '13523', 'advanced', 'safe', 612, 18 FROM users u WHERE u.email = 'student.13523@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, @xi_c1_id, '13528', 'basic', 'danger', 82, 0 FROM users u WHERE u.email = 'student.13528@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, @xi_c1_id, '13561', 'intermediate', 'warning', 244, 5 FROM users u WHERE u.email = 'student.13561@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, @xi_c1_id, '13596', 'advanced', 'safe', 538, 9 FROM users u WHERE u.email = 'student.13596@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, @xi_c1_id, '13597', 'intermediate', 'safe', 356, 7 FROM users u WHERE u.email = 'student.13597@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, @xi_c1_id, '13627', 'basic', 'warning', 164, 2 FROM users u WHERE u.email = 'student.13627@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, @xi_c1_id, '13637', 'advanced', 'safe', 451, 14 FROM users u WHERE u.email = 'student.13637@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, @xi_c1_id, '13640', 'basic', 'warning', 219, 4 FROM users u WHERE u.email = 'student.13640@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, @xi_c1_id, '13642', 'intermediate', 'safe', 635, 12 FROM users u WHERE u.email = 'student.13642@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, @xi_c1_id, '13652', 'advanced', 'danger', 105, 3 FROM users u WHERE u.email = 'student.13652@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, @xi_c1_id, '13658', 'intermediate', 'warning', 267, 18 FROM users u WHERE u.email = 'student.13658@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, @xi_c1_id, '13659', 'basic', 'safe', 561, 0 FROM users u WHERE u.email = 'student.13659@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, @xi_c1_id, '13660', 'advanced', 'safe', 379, 5 FROM users u WHERE u.email = 'student.13660@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, @xi_c1_id, '13667', 'basic', 'warning', 187, 9 FROM users u WHERE u.email = 'student.13667@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, @xi_c1_id, '13680', 'intermediate', 'safe', 474, 7 FROM users u WHERE u.email = 'student.13680@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, @xi_c1_id, '13683', 'advanced', 'warning', 242, 2 FROM users u WHERE u.email = 'student.13683@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, @xi_c1_id, '13684', 'intermediate', 'safe', 658, 14 FROM users u WHERE u.email = 'student.13684@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, @xi_c1_id, '13685', 'basic', 'danger', 128, 4 FROM users u WHERE u.email = 'student.13685@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, @xi_c1_id, '13686', 'advanced', 'warning', 290, 12 FROM users u WHERE u.email = 'student.13686@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, @xi_c1_id, '13693', 'basic', 'safe', 584, 3 FROM users u WHERE u.email = 'student.13693@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, @xi_c1_id, '13739', 'intermediate', 'safe', 402, 18 FROM users u WHERE u.email = 'student.13739@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, @xi_c1_id, '13718', 'advanced', 'warning', 210, 0 FROM users u WHERE u.email = 'student.13718@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, @xi_c1_id, '13742', 'intermediate', 'safe', 497, 5 FROM users u WHERE u.email = 'student.13742@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, @xi_c1_id, '13745', 'basic', 'warning', 265, 9 FROM users u WHERE u.email = 'student.13745@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, @xi_c1_id, '13748', 'advanced', 'safe', 681, 7 FROM users u WHERE u.email = 'student.13748@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, @xi_c1_id, '13754', 'basic', 'danger', 151, 2 FROM users u WHERE u.email = 'student.13754@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, @xi_c1_id, '13758', 'intermediate', 'warning', 313, 14 FROM users u WHERE u.email = 'student.13758@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, @xi_c1_id, '13763', 'advanced', 'safe', 607, 4 FROM users u WHERE u.email = 'student.13763@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, @xi_c1_id, '13768', 'intermediate', 'safe', 425, 12 FROM users u WHERE u.email = 'student.13768@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, @xi_c1_id, '13778', 'basic', 'warning', 233, 3 FROM users u WHERE u.email = 'student.13778@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, @xi_c1_id, '13824', 'advanced', 'safe', 520, 18 FROM users u WHERE u.email = 'student.13824@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, @xi_c1_id, '13841', 'basic', 'warning', 288, 0 FROM users u WHERE u.email = 'student.13841@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, @xi_c1_id, '13885', 'intermediate', 'safe', 704, 5 FROM users u WHERE u.email = 'student.13885@edusense.ai'
+UNION ALL SELECT @default_school_id, u.id, @xi_c1_id, '13895', 'advanced', 'danger', 174, 9 FROM users u WHERE u.email = 'student.13895@edusense.ai';
 
 INSERT INTO subjects (school_id, name, code, description)
 VALUES
-  (@default_school_id, 'Matematika', 'MTK-WJB', 'Fungsi linear, persamaan, gradien, dan pemecahan masalah.'),
-  (@default_school_id, 'Fisika', 'FSK', 'Gerak, gaya, energi, dan eksperimen dasar.'),
-  (@default_school_id, 'Bahasa Inggris', 'BIG', 'Reading, grammar, writing, dan analytical exposition.');
+  (@default_school_id, 'FISIKA', 'FIS', 'FISIKA untuk kelas xi-c1.'),
+  (@default_school_id, 'MATEMATIKA', 'MAT', 'MATEMATIKA untuk kelas xi-c1.'),
+  (@default_school_id, 'BAHASA INGGRIS', 'BIG', 'BAHASA INGGRIS untuk kelas xi-c1.'),
+  (@default_school_id, 'PENDIDIKAN JASMANI OLAHRAGA KEBUGARAN', 'PJOK', 'PENDIDIKAN JASMANI OLAHRAGA KEBUGARAN untuk kelas xi-c1.'),
+  (@default_school_id, 'PENDIDIKAN KEWARGANEGARAAN', 'PKN', 'PENDIDIKAN KEWARGANEGARAAN untuk kelas xi-c1.'),
+  (@default_school_id, 'BIMBINGAN KONSELING', 'BK', 'BIMBINGAN KONSELING untuk kelas xi-c1.'),
+  (@default_school_id, 'EKONOMI', 'EKO', 'EKONOMI untuk kelas xi-c1.'),
+  (@default_school_id, 'BAHASA INDONESIA', 'BIN', 'BAHASA INDONESIA untuk kelas xi-c1.'),
+  (@default_school_id, 'SENI', 'SENI', 'SENI untuk kelas xi-c1.'),
+  (@default_school_id, 'KIMIA', 'KIM', 'KIMIA untuk kelas xi-c1.'),
+  (@default_school_id, 'PENDIDIKAN AGAMA ISLAM', 'PAI', 'PENDIDIKAN AGAMA ISLAM untuk kelas xi-c1.'),
+  (@default_school_id, 'BIOLOGI', 'BIO', 'BIOLOGI untuk kelas xi-c1.'),
+  (@default_school_id, 'SEJARAH', 'SEJ', 'SEJARAH untuk kelas xi-c1.'),
+  (@default_school_id, 'ANTROPOLOGI', 'ANTRO', 'ANTROPOLOGI untuk kelas xi-c1.'),
+  (@default_school_id, 'GEOGRAFI', 'GEO', 'GEOGRAFI untuk kelas xi-c1.'),
+  (@default_school_id, 'PENDIDIKAN AGAMA KRISTEN', 'PAKr', 'PENDIDIKAN AGAMA KRISTEN untuk kelas xi-c1.'),
+  (@default_school_id, 'SOSIOLOGI', 'SOS', 'SOSIOLOGI untuk kelas xi-c1.'),
+  (@default_school_id, 'INFORMATIKA', 'TIK', 'INFORMATIKA untuk kelas xi-c1.'),
+  (@default_school_id, 'MANDARIN', 'MAND', 'MANDARIN untuk kelas xi-c1.'),
+  (@default_school_id, 'BAHARI', 'BHR', 'BAHARI untuk kelas xi-c1.'),
+  (@default_school_id, 'PENDIDIKAN AGAMA HINDU', 'PAH', 'PENDIDIKAN AGAMA HINDU untuk kelas xi-c1.'),
+  (@default_school_id, 'PENDIDIKAN AGAMA KATHOLIK', 'PAK', 'PENDIDIKAN AGAMA KATHOLIK untuk kelas xi-c1.'),
+  (@default_school_id, 'BAHASA JAWA', 'BJW', 'BAHASA JAWA untuk kelas xi-c1.'),
+  (@default_school_id, 'PENDIDIKAN KEWIRAUSAHAAN', 'PKWU', 'PENDIDIKAN KEWIRAUSAHAAN untuk kelas xi-c1.');
 
-SET @math_subject_id = (SELECT id FROM subjects WHERE school_id = @default_school_id AND code = 'MTK-WJB');
-SET @physics_subject_id = (SELECT id FROM subjects WHERE school_id = @default_school_id AND code = 'FSK');
+SET @math_subject_id = (SELECT id FROM subjects WHERE school_id = @default_school_id AND code = 'MAT');
+SET @physics_subject_id = (SELECT id FROM subjects WHERE school_id = @default_school_id AND code = 'FIS');
 SET @english_subject_id = (SELECT id FROM subjects WHERE school_id = @default_school_id AND code = 'BIG');
 
 INSERT INTO teacher_classes (school_id, teacher_id, class_id, subject_id, assignment_type)
-VALUES
-  (@default_school_id, @rani_teacher_id, @xi_ipa_2_id, @math_subject_id, 'subject_teacher'),
-  (@default_school_id, @rani_teacher_id, @xi_ipa_1_id, @math_subject_id, 'subject_teacher'),
-  (@default_school_id, @bima_teacher_id, @xi_ipa_2_id, @physics_subject_id, 'subject_teacher');
+SELECT @default_school_id, t.id, @xi_c1_id, s.id, 'subject_teacher'
+FROM (
+  SELECT 'H46' AS teacher_code, 'FIS' AS subject_code
+  UNION ALL SELECT 'B7', 'PKN'
+  UNION ALL SELECT 'G6', 'MAT'
+  UNION ALL SELECT 'E5', 'BIG'
+  UNION ALL SELECT 'F58', 'PJOK'
+  UNION ALL SELECT 'U12', 'BK'
+  UNION ALL SELECT 'T42', 'TIK'
+  UNION ALL SELECT 'G47', 'MAT'
+  UNION ALL SELECT 'C56', 'BIN'
+  UNION ALL SELECT 'D63', 'SEJ'
+  UNION ALL SELECT 'O33', 'BHR'
+  UNION ALL SELECT 'S53', 'PKWU'
+  UNION ALL SELECT 'J16', 'KIM'
+  UNION ALL SELECT 'A17', 'PAI'
+  UNION ALL SELECT 'R37', 'BJW'
+  UNION ALL SELECT 'M14', 'SENI'
+) assignments
+INNER JOIN teachers t
+  ON t.school_id = @default_school_id
+ AND t.employee_number = assignments.teacher_code
+INNER JOIN subjects s
+  ON s.school_id = @default_school_id
+ AND s.code = assignments.subject_code;
 
 INSERT INTO materials (subject_id, title, content, level, estimated_minutes)
 VALUES
@@ -670,78 +902,6 @@ SET @math_q3_id = (SELECT id FROM questions WHERE quiz_id = @math_practice_quiz_
 SET @physics_q1_id = (SELECT id FROM questions WHERE quiz_id = @physics_quiz_id AND question_text LIKE 'Rumus kecepatan%');
 SET @physics_q2_id = (SELECT id FROM questions WHERE quiz_id = @physics_quiz_id AND question_text LIKE 'Benda menempuh%');
 
-INSERT INTO quiz_attempts
-  (student_id, quiz_id, score, accuracy_rate, time_spent_seconds, attempt_number, ai_level_result, performance_trend, started_at, submitted_at)
-VALUES
-  (@alya_student_id, @diagnostic_quiz_id, 80, 75, 940, 1, 'intermediate', 'improving', DATE_SUB(NOW(), INTERVAL 7 DAY), DATE_SUB(NOW(), INTERVAL 7 DAY)),
-  (@alya_student_id, @math_practice_quiz_id, 92, 100, 780, 1, 'advanced', 'improving', DATE_SUB(NOW(), INTERVAL 1 DAY), DATE_SUB(NOW(), INTERVAL 1 DAY)),
-  (@raka_student_id, @diagnostic_quiz_id, 50, 50, 1220, 1, 'basic', 'stable', DATE_SUB(NOW(), INTERVAL 3 DAY), DATE_SUB(NOW(), INTERVAL 3 DAY)),
-  (@nadia_student_id, @math_practice_quiz_id, 96, 100, 640, 1, 'advanced', 'improving', DATE_SUB(NOW(), INTERVAL 2 DAY), DATE_SUB(NOW(), INTERVAL 2 DAY));
-
-SET @alya_diag_attempt_id = (SELECT id FROM quiz_attempts WHERE student_id = @alya_student_id AND quiz_id = @diagnostic_quiz_id LIMIT 1);
-SET @alya_math_attempt_id = (SELECT id FROM quiz_attempts WHERE student_id = @alya_student_id AND quiz_id = @math_practice_quiz_id LIMIT 1);
-SET @raka_diag_attempt_id = (SELECT id FROM quiz_attempts WHERE student_id = @raka_student_id AND quiz_id = @diagnostic_quiz_id LIMIT 1);
-SET @nadia_math_attempt_id = (SELECT id FROM quiz_attempts WHERE student_id = @nadia_student_id AND quiz_id = @math_practice_quiz_id LIMIT 1);
-
-INSERT INTO answers
-  (attempt_id, question_id, student_answer, is_correct, score, confidence_score, ai_feedback)
-VALUES
-  (@alya_diag_attempt_id, @diag_q1_id, '4', TRUE, 10, 100, 'Jawaban sudah tepat dan menunjukkan pemahaman konsep.'),
-  (@alya_diag_attempt_id, @diag_q2_id, '8', TRUE, 10, 100, 'Jawaban sudah tepat dan menunjukkan pemahaman konsep.'),
-  (@alya_diag_attempt_id, @diag_q3_id, '3', TRUE, 10, 100, 'Jawaban sudah tepat dan menunjukkan pemahaman konsep.'),
-  (@alya_diag_attempt_id, @diag_q4_id, 'Identifikasi informasi, tentukan variabel, buat model, hitung, dan cek jawaban.', TRUE, 8, 82, 'Jawaban essay menunjukkan pemahaman yang kuat.'),
-  (@alya_math_attempt_id, @math_q1_id, '-2', TRUE, 10, 100, 'Jawaban benar.'),
-  (@alya_math_attempt_id, @math_q2_id, '2', TRUE, 10, 100, 'Jawaban benar.'),
-  (@alya_math_attempt_id, @math_q3_id, 'Konstanta b adalah nilai awal dan titik potong sumbu y.', TRUE, 9, 90, 'Jawaban essay sangat sesuai.'),
-  (@raka_diag_attempt_id, @diag_q1_id, '4', TRUE, 10, 100, 'Jawaban benar.'),
-  (@raka_diag_attempt_id, @diag_q2_id, '10', FALSE, 0, 0, 'Jawaban belum tepat. Pelajari kembali konsep terkait.'),
-  (@raka_diag_attempt_id, @diag_q3_id, '2', FALSE, 0, 0, 'Jawaban belum tepat. Pelajari kembali konsep terkait.'),
-  (@raka_diag_attempt_id, @diag_q4_id, 'Saya masih perlu memahami soal cerita.', FALSE, 2, 28, 'Jawaban essay masih perlu dilengkapi.'),
-  (@nadia_math_attempt_id, @math_q1_id, '-2', TRUE, 10, 100, 'Jawaban benar.'),
-  (@nadia_math_attempt_id, @math_q2_id, '2', TRUE, 10, 100, 'Jawaban benar.'),
-  (@nadia_math_attempt_id, @math_q3_id, 'Konstanta b menunjukkan nilai awal atau titik potong sumbu y.', TRUE, 10, 96, 'Jawaban essay sangat sesuai.');
-
-INSERT INTO learning_progress
-  (student_id, material_id, status, progress_percent, time_spent_seconds, completed_at)
-VALUES
-  (@alya_student_id, @math_basic_material_id, 'completed', 100, 1800, DATE_SUB(NOW(), INTERVAL 8 DAY)),
-  (@alya_student_id, @math_mid_material_id, 'completed', 100, 2100, DATE_SUB(NOW(), INTERVAL 2 DAY)),
-  (@alya_student_id, @math_adv_material_id, 'in_progress', 64, 920, NULL),
-  (@raka_student_id, @math_basic_material_id, 'in_progress', 45, 1160, NULL),
-  (@raka_student_id, @math_mid_material_id, 'not_started', 0, 0, NULL),
-  (@nadia_student_id, @math_basic_material_id, 'completed', 100, 1500, DATE_SUB(NOW(), INTERVAL 10 DAY)),
-  (@nadia_student_id, @math_mid_material_id, 'completed', 100, 1600, DATE_SUB(NOW(), INTERVAL 5 DAY)),
-  (@nadia_student_id, @math_adv_material_id, 'completed', 100, 1900, DATE_SUB(NOW(), INTERVAL 1 DAY));
-
-INSERT INTO ai_recommendations
-  (student_id, material_id, recommendation_type, reason, priority, status)
-VALUES
-  (@alya_student_id, @math_adv_material_id, 'challenge', 'Alya sudah stabil di konsep gradien. Lanjutkan soal cerita level lanjutan.', 'low', 'pending'),
-  (@raka_student_id, @math_basic_material_id, 'remedial', 'Akurasi dasar masih 50%. Ulangi persamaan sederhana dan latihan bertahap.', 'high', 'pending'),
-  (@nadia_student_id, @physics_basic_material_id, 'challenge', 'Performa tinggi. Beri tantangan lintas konsep untuk menjaga momentum.', 'low', 'pending');
-
-INSERT INTO student_features
-  (student_id, learning_speed, accuracy_rate, consistency_score, engagement_score, retry_rate)
-VALUES
-  (@alya_student_id, 1.34, 86, 91, 88, 8),
-  (@raka_student_id, 0.82, 58, 64, 59, 24),
-  (@nadia_student_id, 1.52, 94, 96, 92, 4);
-
-INSERT INTO ai_predictions
-  (student_id, predicted_level, risk_prediction, confidence, model_version, prediction_reason)
-VALUES
-  (@alya_student_id, 'advanced', 'low', 91, 'demo-v1.0', 'Akurasi tinggi dan streak konsisten selama 12 hari.'),
-  (@raka_student_id, 'basic', 'medium', 74, 'demo-v1.0', 'Butuh remedial konsep dasar dan pemantauan progres mingguan.'),
-  (@nadia_student_id, 'advanced', 'low', 95, 'demo-v1.0', 'Performa stabil di level lanjutan.');
-
-INSERT INTO activity_logs
-  (student_id, activity_type, description, metadata, created_at)
-VALUES
-  (@alya_student_id, 'login', 'Alya masuk ke dashboard siswa.', JSON_OBJECT('role', 'student'), DATE_SUB(NOW(), INTERVAL 6 HOUR)),
-  (@alya_student_id, 'submit_quiz', 'Mengirim kuis adaptif Gradien dan Grafik.', JSON_OBJECT('attempt_id', @alya_math_attempt_id, 'score', 92), DATE_SUB(NOW(), INTERVAL 1 DAY)),
-  (@raka_student_id, 'submit_quiz', 'Mengirim tes diagnostik AI.', JSON_OBJECT('attempt_id', @raka_diag_attempt_id, 'score', 50), DATE_SUB(NOW(), INTERVAL 3 DAY)),
-  (@nadia_student_id, 'view_material', 'Membuka materi Analisis Soal Cerita Linear.', JSON_OBJECT('material_id', @math_adv_material_id), DATE_SUB(NOW(), INTERVAL 2 DAY));
-
 INSERT INTO badges (school_id, name, description, icon, requirement)
 VALUES
   (@default_school_id, 'Pemula AI', 'Menyelesaikan aktivitas belajar pertama di EduSense AI.', 'sparkles', 'Login dan mulai satu materi.'),
@@ -749,21 +909,3 @@ VALUES
   (@default_school_id, 'Jago Kuis', 'Meraih akurasi minimal 80% pada kuis adaptif.', 'target', 'Accuracy rate minimal 80%.'),
   (@default_school_id, 'Mastery Badge', 'Mencapai level advanced dengan akurasi tinggi.', 'award', 'Level advanced dan akurasi tinggi.'),
   (@default_school_id, 'Diagnostic Finisher', 'Menyelesaikan tes diagnostik AI.', 'check-circle', 'Submit tes diagnostik.');
-
-SET @starter_badge_id = (SELECT id FROM badges WHERE school_id = @default_school_id AND name = 'Pemula AI');
-SET @streak_badge_id = (SELECT id FROM badges WHERE school_id = @default_school_id AND name = 'Runtun 7 Hari');
-SET @quiz_badge_id = (SELECT id FROM badges WHERE school_id = @default_school_id AND name = 'Jago Kuis');
-SET @mastery_badge_id = (SELECT id FROM badges WHERE school_id = @default_school_id AND name = 'Mastery Badge');
-SET @diagnostic_badge_id = (SELECT id FROM badges WHERE school_id = @default_school_id AND name = 'Diagnostic Finisher');
-
-INSERT INTO student_badges (school_id, student_id, badge_id, earned_at)
-VALUES
-  (@default_school_id, @alya_student_id, @starter_badge_id, DATE_SUB(NOW(), INTERVAL 9 DAY)),
-  (@default_school_id, @alya_student_id, @streak_badge_id, DATE_SUB(NOW(), INTERVAL 3 DAY)),
-  (@default_school_id, @alya_student_id, @quiz_badge_id, DATE_SUB(NOW(), INTERVAL 1 DAY)),
-  (@default_school_id, @alya_student_id, @diagnostic_badge_id, DATE_SUB(NOW(), INTERVAL 7 DAY)),
-  (@default_school_id, @raka_student_id, @starter_badge_id, DATE_SUB(NOW(), INTERVAL 3 DAY)),
-  (@default_school_id, @raka_student_id, @diagnostic_badge_id, DATE_SUB(NOW(), INTERVAL 3 DAY)),
-  (@default_school_id, @nadia_student_id, @starter_badge_id, DATE_SUB(NOW(), INTERVAL 15 DAY)),
-  (@default_school_id, @nadia_student_id, @streak_badge_id, DATE_SUB(NOW(), INTERVAL 8 DAY)),
-  (@default_school_id, @nadia_student_id, @mastery_badge_id, DATE_SUB(NOW(), INTERVAL 2 DAY));

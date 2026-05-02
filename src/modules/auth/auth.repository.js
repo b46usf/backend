@@ -16,12 +16,28 @@ const baseUserSelect = `
     r.name AS role_name,
     u.name,
     u.email,
+    u.password,
     u.avatar,
     u.status,
     u.created_at,
-    u.updated_at
+    u.updated_at,
+    sch.name AS school_name,
+    st.id AS student_id,
+    st.student_number,
+    st.class_id,
+    c.name AS class_name,
+    c.grade_level,
+    c.academic_year,
+    t.id AS teacher_id,
+    t.employee_number,
+    t.position,
+    t.specialization
   FROM users u
   INNER JOIN roles r ON r.id = u.role_id
+  LEFT JOIN schools sch ON sch.id = u.school_id
+  LEFT JOIN students st ON st.user_id = u.id AND st.school_id = u.school_id
+  LEFT JOIN classes c ON c.id = st.class_id AND c.school_id = st.school_id
+  LEFT JOIN teachers t ON t.user_id = u.id AND t.school_id = u.school_id
 `;
 
 const findRoleByName = async (roleName, executor = pool) => {
@@ -42,20 +58,7 @@ const findUserByEmail = async (email, executor = pool) => {
   const emailVariants = encryptTextVariants(email);
   const [rows] = await executor.execute(
     `
-      SELECT
-        u.id,
-        u.school_id,
-        u.role_id,
-        r.name AS role_name,
-        u.name,
-        u.email,
-        u.password,
-        u.avatar,
-        u.status,
-        u.created_at,
-        u.updated_at
-      FROM users u
-      INNER JOIN roles r ON r.id = u.role_id
+      ${baseUserSelect}
       WHERE u.email IN (${emailVariants.map(() => '?').join(', ')})
       LIMIT 1
     `,

@@ -1,5 +1,3 @@
-const { OAuth2Client } = require('google-auth-library');
-const env = require('../../config/env');
 const { DEFAULT_SCHOOL_ID, ROLES, USER_STATUSES } = require('../../config/constants');
 const { withTransaction } = require('../../config/db');
 const { comparePassword, hashPassword } = require('../../utils/hash');
@@ -8,17 +6,26 @@ const { decryptText, encryptText, encryptTextVariants } = require('../../utils/c
 const { BadRequestError, ConflictError, NotFoundError, UnauthorizedError } = require('../../shared/errors');
 const authRepository = require('./auth.repository');
 
-const googleClient = new OAuth2Client(env.GOOGLE_CLIENT_ID || undefined);
-
 const sanitizeAuthUser = (user) => ({
   id: user.id,
   school_id: user.school_id,
+  school_name: user.school_name,
   role_id: user.role_id,
   role: user.role_name,
   name: user.name,
   email: decryptText(user.email),
   avatar: user.avatar,
   status: user.status,
+  student_id: user.student_id,
+  student_number: user.student_number,
+  class_id: user.class_id,
+  class_name: user.class_name,
+  grade_level: user.grade_level,
+  academic_year: user.academic_year,
+  teacher_id: user.teacher_id,
+  employee_number: user.employee_number,
+  position: user.position,
+  specialization: user.specialization,
   created_at: user.created_at,
   updated_at: user.updated_at,
 });
@@ -41,10 +48,6 @@ const resolveStudentClassId = async (schoolId, classId, connection) => {
 
 const createRoleProfile = async (role, userId, payload, connection) => {
   if (role === ROLES.STUDENT) {
-    if (!payload.classId) {
-      throw new BadRequestError('classId is required for student registration');
-    }
-
     await authRepository.createStudentProfile(
       {
         userId,
@@ -118,11 +121,12 @@ const register = async ({
     );
 
     const user = await authRepository.findUserById(createdUser.id, connection);
-    const token = signAccessToken(user);
+    const token = user.status === USER_STATUSES.ACTIVE ? signAccessToken(user) : null;
 
     return {
       user: sanitizeAuthUser(user),
-      token: user.status === USER_STATUSES.ACTIVE ? token : null,
+      token,
+      verification_status: user.status === USER_STATUSES.ACTIVE ? 'active' : 'pending_admin_confirmation',
     };
   });
 
@@ -143,99 +147,13 @@ const login = async ({ email, password }) => {
   }
 
   if (user.status !== USER_STATUSES.ACTIVE) {
-    throw new UnauthorizedError('Your account is inactive');
+    throw new UnauthorizedError('Akun belum dikonfirmasi admin. Silakan tunggu admin konfirmasi dalam 24 jam.');
   }
 
   return {
     user: sanitizeAuthUser(user),
     token: signAccessToken(user),
   };
-};
-
-const verifyGoogleIdToken = async (idToken) => {
-  if (env.GOOGLE_CLIENT_ID) {
-    const ticket = await googleClient.verifyIdToken({
-      idToken,
-      audience: env.GOOGLE_CLIENT_ID,
-    });
-
-    return ticket.getPayload();
-  }
-
-  if (env.NODE_ENV === 'production') {
-    throw new BadRequestError('GOOGLE_CLIENT_ID is required for Google OAuth registration');
-  }
-
-  const [, payload] = idToken.split('.');
-
-  if (!payload) {
-    throw new BadRequestError('Invalid Google idToken');
-  }
-
-  return JSON.parse(Buffer.from(payload, 'base64url').toString('utf8'));
-};
-
-const registerWithGoogle = async ({
-  idToken,
-  role,
-  classId,
-  studentNumber,
-  employeeNumber,
-  position,
-  specialization,
-}) => {
-  if (![ROLES.STUDENT, ROLES.TEACHER].includes(role)) {
-    throw new BadRequestError('Google registration only supports student and teacher roles');
-  }
-
-  const googleProfile = await verifyGoogleIdToken(idToken);
-  const email = googleProfile.email;
-
-  if (!email || googleProfile.email_verified === false) {
-    throw new BadRequestError('Google account email must be verified');
-  }
-
-  return withTransaction(async (connection) => {
-    const schoolId = DEFAULT_SCHOOL_ID;
-    const existingUser = await authRepository.findUserByEmail(email, connection);
-
-    if (existingUser) {
-      throw new ConflictError('Email is already registered');
-    }
-
-    const roleRecord = await authRepository.findRoleByName(role, connection);
-
-    if (!roleRecord) {
-      throw new BadRequestError(`Role ${role} is not available in database`);
-    }
-
-    const createdUser = await authRepository.createUser(
-      {
-        schoolId,
-        roleId: roleRecord.id,
-        name: googleProfile.name || email,
-        email: encryptText(email),
-        password: await hashPassword(encryptText(`${googleProfile.sub}:${email}`)),
-        avatar: googleProfile.picture,
-        status: USER_STATUSES.INACTIVE,
-      },
-      connection,
-    );
-
-    await createRoleProfile(
-      role,
-      createdUser.id,
-      { schoolId, classId, studentNumber, employeeNumber, position, specialization },
-      connection,
-    );
-
-    const user = await authRepository.findUserById(createdUser.id, connection);
-
-    return {
-      user: sanitizeAuthUser(user),
-      verification_status: 'pending_admin_verification',
-    };
-  });
 };
 
 const verifyUserByAdmin = async (userId) => {
@@ -262,6 +180,5 @@ module.exports = {
   getProfile,
   login,
   register,
-  registerWithGoogle,
   verifyUserByAdmin,
 };

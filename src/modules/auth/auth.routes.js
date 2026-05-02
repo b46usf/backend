@@ -31,18 +31,6 @@ const loginSchema = {
   }),
 };
 
-const googleRegisterSchema = {
-  body: z.object({
-    idToken: z.string().min(1),
-    role: z.enum([ROLES.TEACHER, ROLES.STUDENT]),
-    classId: z.coerce.number().int().positive().optional(),
-    studentNumber: z.string().max(50).optional(),
-    employeeNumber: z.string().max(50).optional(),
-    position: z.enum(Object.values(TEACHER_POSITIONS)).optional(),
-    specialization: z.string().max(100).optional(),
-  }),
-};
-
 const userParamsSchema = {
   params: z.object({
     id: z.coerce.number().int().positive(),
@@ -50,7 +38,8 @@ const userParamsSchema = {
 };
 
 router.post('/register', validate(registerSchema), authController.register);
-router.post('/google/register', validate(googleRegisterSchema), authController.registerWithGoogle);
+router.post('/google/login', authController.googleAuthDisabled);
+router.post('/google/register', authController.googleAuthDisabled);
 router.post('/login', loginRateLimiter, validate(loginSchema), authController.login);
 router.get('/me', authenticate, authController.me);
 router.patch(

@@ -1,5 +1,5 @@
 const env = require('../config/env');
-const { encryptJson } = require('../utils/crypto');
+const { encryptResponseJson } = require('../utils/crypto');
 
 const shouldReturnPlainResponse = (res) =>
   env.NODE_ENV !== 'production' && res.req?.headers['x-edusense-plain-response'] === 'true';
@@ -7,7 +7,7 @@ const shouldReturnPlainResponse = (res) =>
 const shouldEncrypt = (res, value) =>
   env.API_RESPONSE_ENCRYPTION_ENABLED && !shouldReturnPlainResponse(res) && value !== null && value !== undefined;
 
-const encryptResponseField = (res, value) => (shouldEncrypt(res, value) ? encryptJson(value) : value);
+const encryptResponseField = (res, value) => (shouldEncrypt(res, value) ? encryptResponseJson(value) : value);
 
 const sendSuccess = (res, { statusCode = 200, message = 'Success', data = null, meta } = {}) => {
   const payload = {

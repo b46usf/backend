@@ -42,6 +42,7 @@ const findStudents = async (filters = {}, schoolId, executor = pool) => {
         u.name,
         u.email,
         u.avatar,
+        u.status,
         c.name AS class_name,
         c.grade_level,
         c.academic_year
@@ -74,6 +75,7 @@ const findStudentById = async (studentId, schoolId, executor = pool) => {
         u.name,
         u.email,
         u.avatar,
+        u.status,
         c.name AS class_name,
         c.grade_level,
         c.academic_year
@@ -106,6 +108,7 @@ const findStudentByUserId = async (userId, schoolId, executor = pool) => {
         u.name,
         u.email,
         u.avatar,
+        u.status,
         c.name AS class_name,
         c.grade_level,
         c.academic_year

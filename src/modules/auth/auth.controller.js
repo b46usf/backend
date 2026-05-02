@@ -1,11 +1,12 @@
 const { sendCreated, sendSuccess } = require('../../shared/response');
 const asyncHandler = require('../../shared/asyncHandler');
+const { ForbiddenError } = require('../../shared/errors');
 const authService = require('./auth.service');
 
 const register = asyncHandler(async (req, res) => {
   const result = await authService.register(req.body);
 
-  return sendCreated(res, 'User registered successfully', result);
+  return sendCreated(res, 'Pendaftaran berhasil, menunggu konfirmasi admin', result);
 });
 
 const login = asyncHandler(async (req, res) => {
@@ -26,10 +27,8 @@ const me = asyncHandler(async (req, res) => {
   });
 });
 
-const registerWithGoogle = asyncHandler(async (req, res) => {
-  const result = await authService.registerWithGoogle(req.body);
-
-  return sendCreated(res, 'Google registration submitted for admin verification', result);
+const googleAuthDisabled = asyncHandler(async () => {
+  throw new ForbiddenError('Login dan register via Google account sedang dinonaktifkan');
 });
 
 const verifyUserByAdmin = asyncHandler(async (req, res) => {
@@ -45,6 +44,6 @@ module.exports = {
   login,
   me,
   register,
-  registerWithGoogle,
+  googleAuthDisabled,
   verifyUserByAdmin,
 };

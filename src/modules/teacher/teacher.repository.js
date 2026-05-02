@@ -13,7 +13,8 @@ const findTeachers = async (schoolId, executor = pool) => {
         t.created_at,
         u.name,
         u.email,
-        u.avatar
+        u.avatar,
+        u.status
       FROM teachers t
       INNER JOIN users u ON u.id = t.user_id AND u.school_id = t.school_id
       WHERE t.school_id = ?
@@ -38,7 +39,8 @@ const findTeacherById = async (teacherId, schoolId, executor = pool) => {
         t.created_at,
         u.name,
         u.email,
-        u.avatar
+        u.avatar,
+        u.status
       FROM teachers t
       INNER JOIN users u ON u.id = t.user_id AND u.school_id = t.school_id
       WHERE t.id = ? AND t.school_id = ?
@@ -59,11 +61,16 @@ const findTeacherClasses = async (teacherId, schoolId, executor = pool) => {
         c.id AS class_id,
         c.name,
         c.grade_level,
-        c.academic_year
+        c.academic_year,
+        sub.id AS subject_id,
+        sub.name AS subject_name,
+        sub.code AS subject_code,
+        tc.assignment_type
       FROM teacher_classes tc
       INNER JOIN classes c ON c.id = tc.class_id AND c.school_id = tc.school_id
+      INNER JOIN subjects sub ON sub.id = tc.subject_id AND sub.school_id = tc.school_id
       WHERE tc.teacher_id = ? AND tc.school_id = ?
-      ORDER BY c.name ASC
+      ORDER BY c.name ASC, sub.name ASC
     `,
     [teacherId, schoolId],
   );
@@ -87,10 +94,10 @@ const findClassDashboard = async (teacherId, schoolId, executor = pool) => {
         c.school_id,
         c.name AS class_name,
         c.grade_level,
-        COUNT(s.id) AS total_students,
-        SUM(CASE WHEN s.risk_status = 'safe' THEN 1 ELSE 0 END) AS safe_students,
-        SUM(CASE WHEN s.risk_status = 'warning' THEN 1 ELSE 0 END) AS warning_students,
-        SUM(CASE WHEN s.risk_status = 'danger' THEN 1 ELSE 0 END) AS danger_students,
+        COUNT(DISTINCT s.id) AS total_students,
+        COUNT(DISTINCT CASE WHEN s.risk_status = 'safe' THEN s.id END) AS safe_students,
+        COUNT(DISTINCT CASE WHEN s.risk_status = 'warning' THEN s.id END) AS warning_students,
+        COUNT(DISTINCT CASE WHEN s.risk_status = 'danger' THEN s.id END) AS danger_students,
         AVG(s.total_score) AS average_total_score
       FROM teacher_classes tc
       INNER JOIN classes c ON c.id = tc.class_id AND c.school_id = tc.school_id
@@ -108,7 +115,7 @@ const findClassDashboard = async (teacherId, schoolId, executor = pool) => {
 const findStudentsNeedingIntervention = async (teacherId, schoolId, executor = pool) => {
   const [rows] = await executor.execute(
     `
-      SELECT
+      SELECT DISTINCT
         s.id,
         s.school_id,
         u.name,

@@ -8,6 +8,194 @@ const { encryptText } = require('../src/utils/crypto');
 
 const DEMO_PASSWORD = 'demo12345';
 const SCHOOL_YEAR = '2025/2026';
+const CLASS_SEED = {
+  name: 'xi-c1',
+  gradeLevel: 'XI',
+  academicYear: SCHOOL_YEAR,
+};
+const HOMEROOM_TEACHER_CODE = 'T42';
+
+const STUDENT_SEEDS = [
+  { nis: '13508', name: 'ANANDHITA SYAKIRA HIDAYAT', gender: 'P' },
+  { nis: '13518', name: 'ANISA MULIA', gender: 'P' },
+  { nis: '13523', name: 'AQBIEL JUAND DWIRIKA RIZKI RAMADHAN', gender: 'L' },
+  { nis: '13528', name: 'ARIES INDRA PRAKOSO', gender: 'L' },
+  { nis: '13561', name: "BERNESSA RAHADATUL'AISY VIRBARA", gender: 'P' },
+  { nis: '13596', name: 'DHEA ANANDASYAFIRA', gender: 'P' },
+  { nis: '13597', name: 'DHEA LUCITA SABRINA SAKHI', gender: 'P' },
+  { nis: '13627', name: 'FANDY FITRIYANTO', gender: 'L' },
+  { nis: '13637', name: 'FAIRUS CINTA ALIFIU FAHAMSA', gender: 'P' },
+  { nis: '13640', name: 'FATIH MUTTAQIN AZKA', gender: 'L' },
+  { nis: '13642', name: 'FEBRIAN IMANUEL HETI PRATAMA', gender: 'L' },
+  { nis: '13652', name: 'GERALD ARVIN A', gender: 'L' },
+  { nis: '13658', name: 'GREVALDIO PUTRA ALEXA EVANO', gender: 'L' },
+  { nis: '13659', name: 'HAFIZH KHAIZURAN FAUZI', gender: 'L' },
+  { nis: '13660', name: 'HANA AATIKAH JAUZA', gender: 'P' },
+  { nis: '13667', name: 'INGGRID NIKITA PRASETYA', gender: 'P' },
+  { nis: '13680', name: 'JETHRO ATA ALVAREAN', gender: 'L' },
+  { nis: '13683', name: 'JOY ABIMANYU HAPY PUTRA', gender: 'L' },
+  { nis: '13684', name: 'KAFKA XAVIER HAZZA PRAMONO', gender: 'L' },
+  { nis: '13685', name: 'KANAYA KARIN RUBIAWAN', gender: 'P' },
+  { nis: '13686', name: 'KARIN VANESSA KRISDIVA SIBURIAN', gender: 'P' },
+  { nis: '13693', name: 'KENZIE HAFIZ SUSANTO', gender: 'L' },
+  { nis: '13739', name: 'MONICA DEWI SANTOSO', gender: 'P' },
+  { nis: '13718', name: 'MUCHAMMAD FADHIL TORIQ', gender: 'L' },
+  { nis: '13742', name: 'MUHAMMAD AKHTAR RAZAAN', gender: 'L' },
+  { nis: '13745', name: 'MUHAMMAD BRAHMANA ADI', gender: 'L' },
+  { nis: '13748', name: 'MUHAMMAD FADHIL WAFI', gender: 'L' },
+  { nis: '13754', name: 'MUHAMMAD IKHSAN AL AKBAR', gender: 'L' },
+  { nis: '13758', name: 'MUHAMMAD RIKO SETYA WIRADINATA', gender: 'L' },
+  { nis: '13763', name: 'MUTIARA SANIYYAH', gender: 'P' },
+  { nis: '13768', name: 'NADHIEF FATHAN ARRAFIF', gender: 'L' },
+  { nis: '13778', name: 'NAFISAH DZATIR RAJWA', gender: 'P' },
+  { nis: '13824', name: 'RAFASYAH MADANA ARKADIPA', gender: 'L' },
+  { nis: '13841', name: 'REZA EMMERALDI ARIANTO', gender: 'L' },
+  { nis: '13885', name: 'VELISA KHALILAH NISRINA', gender: 'P' },
+  { nis: '13895', name: 'ZAKI RAHMAT FAHREZI', gender: 'L' },
+].map((student) => ({
+  ...student,
+  className: CLASS_SEED.name,
+  academicYear: CLASS_SEED.academicYear,
+}));
+
+const SUBJECT_SEEDS = [
+  { code: 'FIS', name: 'FISIKA' },
+  { code: 'MAT', name: 'MATEMATIKA' },
+  { code: 'BIG', name: 'BAHASA INGGRIS' },
+  { code: 'PJOK', name: 'PENDIDIKAN JASMANI OLAHRAGA KEBUGARAN' },
+  { code: 'PKN', name: 'PENDIDIKAN KEWARGANEGARAAN' },
+  { code: 'BK', name: 'BIMBINGAN KONSELING' },
+  { code: 'EKO', name: 'EKONOMI' },
+  { code: 'BIN', name: 'BAHASA INDONESIA' },
+  { code: 'SENI', name: 'SENI' },
+  { code: 'KIM', name: 'KIMIA' },
+  { code: 'PAI', name: 'PENDIDIKAN AGAMA ISLAM' },
+  { code: 'BIO', name: 'BIOLOGI' },
+  { code: 'SEJ', name: 'SEJARAH' },
+  { code: 'ANTRO', name: 'ANTROPOLOGI' },
+  { code: 'GEO', name: 'GEOGRAFI' },
+  { code: 'PAKr', name: 'PENDIDIKAN AGAMA KRISTEN' },
+  { code: 'SOS', name: 'SOSIOLOGI' },
+  { code: 'TIK', name: 'INFORMATIKA' },
+  { code: 'MAND', name: 'MANDARIN' },
+  { code: 'BHR', name: 'BAHARI' },
+  { code: 'PAH', name: 'PENDIDIKAN AGAMA HINDU' },
+  { code: 'PAK', name: 'PENDIDIKAN AGAMA KATHOLIK' },
+  { code: 'BJW', name: 'BAHASA JAWA' },
+  { code: 'PKWU', name: 'PENDIDIKAN KEWIRAUSAHAAN' },
+];
+
+const subjectNameByCode = new Map(SUBJECT_SEEDS.map((subject) => [subject.code, subject.name]));
+
+const TEACHER_SEEDS = [
+  { code: 'K1', name: 'ROSYIDAH ROHMAH, S.Pd', subjectCode: 'FIS' },
+  { code: 'G2', name: 'Maharani Gita Kusumawardani, S.Pd', subjectCode: 'MAT' },
+  { code: 'E3', name: 'Eva Krisnawati, S.Pd', subjectCode: 'BIG' },
+  { code: 'F4', name: 'RAHMAD ARIF, S.Pd', subjectCode: 'PJOK' },
+  { code: 'E5', name: 'AGUS PRIJATMOKO, S.Pd, M.M', subjectCode: 'BIG' },
+  { code: 'G6', name: 'YANU INDRIYATI, M.Pd', subjectCode: 'MAT' },
+  { code: 'B7', name: 'Dra. RIMA RAHAYU, M.M', subjectCode: 'PKN' },
+  { code: 'U8', name: 'IWAN DILIANTO, S.Psi', subjectCode: 'BK' },
+  { code: 'G9', name: 'IDHA HARIANI, S.Pd', subjectCode: 'MAT' },
+  { code: 'U10', name: 'ERMIYANTUN, S.Pd', subjectCode: 'BK' },
+  { code: 'K11', name: 'Dra. NURCAHYATI', subjectCode: 'EKO' },
+  { code: 'U12', name: 'DARMO, S.Pd', subjectCode: 'BK' },
+  { code: 'C13', name: 'YULIANTI, S.Pd', subjectCode: 'BIN' },
+  { code: 'M14', name: 'IKA APRILIA NINDYASARI. A., S.Pd', subjectCode: 'SENI' },
+  { code: 'U15', name: 'DIAN AYU A., S.Psi', subjectCode: 'BK' },
+  { code: 'J16', name: 'SRI SULASTRI YULIANA, S.Pd', subjectCode: 'KIM' },
+  { code: 'A17', name: 'MUCHAMMAD FARUQ, S.Pd.I', subjectCode: 'PAI' },
+  { code: 'I18', name: 'SUPRAPTI, S.Pd', subjectCode: 'BIO' },
+  { code: 'A19', name: 'YUSWANTO PURNOMO, S.Pd.I', subjectCode: 'PAI' },
+  { code: 'I20', name: 'FATIMATUS ZAHROH, S.Pd,M.M', subjectCode: 'BIO' },
+  { code: 'F21', name: 'ROIS NURIL ALAM ZEIN, S.Pd', subjectCode: 'PJOK' },
+  { code: 'D22', name: 'DENNY RATNASARI, S.Pd', subjectCode: 'SEJ' },
+  { code: 'P22', name: 'DENNY RATNASARI, S.Pd', subjectCode: 'ANTRO' },
+  { code: 'L23', name: 'Dra. MARIA ULFAH', subjectCode: 'GEO' },
+  { code: 'B24', name: 'RETNO DWI KARTIKA.L., S.Pd', subjectCode: 'PKN' },
+  { code: 'C25', name: 'KRISTIN KURNIA WATI, S.Pd', subjectCode: 'BIN' },
+  { code: 'A26', name: 'JENNI HARJANTI, S.Pd Kr', subjectCode: 'PAKr' },
+  { code: 'K27', name: 'SITI KHOTIJAH, S.Pd', subjectCode: 'EKO' },
+  { code: 'K28', name: 'IDAHLYA MUGIRAHAYU, S.Pd', subjectCode: 'EKO' },
+  { code: 'E29', name: 'SITI KHUMAIROH SARAGIH, S.S', subjectCode: 'BIG' },
+  { code: 'N30', name: 'EKA RIZKI RAHMAWATI, S.Sos, M.Sosio', subjectCode: 'SOS' },
+  { code: 'T31', name: 'INTAN  AKMALIA, S.Pd', subjectCode: 'TIK' },
+  { code: 'Q31', name: 'INTAN  AKMALIA, S.Pd', subjectCode: 'MAND' },
+  { code: 'G32', name: 'ROSITA DWI DIAHWARI, S.Pd', subjectCode: 'MAT' },
+  { code: 'I33', name: 'DINDA TRIANA, S.Pd', subjectCode: 'BIO' },
+  { code: 'O33', name: 'DINDA TRIANA, S.Pd', subjectCode: 'BHR' },
+  { code: 'A34', name: 'I WAYAN S, S.PdH', subjectCode: 'PAH' },
+  { code: 'A35', name: 'DHUHROTUL KHOIRIYAH, S.Pd', subjectCode: 'PAI' },
+  { code: 'B35', name: 'DHUHROTUL KHOIRIYAH, S.Pd', subjectCode: 'PKN' },
+  { code: 'A36', name: 'YOSEPH LIDI, S.FIL', subjectCode: 'PAK' },
+  { code: 'R37', name: 'ROSA RAMADHAN, S.Pd', subjectCode: 'BJW' },
+  { code: 'F38', name: 'ENGGAR SUSTIADI PRADANA, S.Pd', subjectCode: 'PJOK' },
+  { code: 'A39', name: 'ANGELICA MAYLANI PUTRI, S.Pd', subjectCode: 'PAI' },
+  { code: 'M40', name: 'GUNTUR AJIE PANGESTU, S.Pd', subjectCode: 'SENI' },
+  { code: 'H41', name: 'INDAH PUTRI MAULIDYA SARI, S.Pd', subjectCode: 'FIS' },
+  { code: 'T42', name: 'BAGUS FAROUKTIAWAN, S.Kom', subjectCode: 'TIK' },
+  { code: 'E43', name: 'DWI NOVIAN AGUSTIN, S.PD', subjectCode: 'BIG' },
+  { code: 'J44', name: 'NANDA TRY HASTUTI,S.Pd', subjectCode: 'KIM' },
+  { code: 'J45', name: 'NUR LAILIL APRILIA, S.Pd', subjectCode: 'KIM' },
+  { code: 'S45', name: 'NUR LAILIL APRILIA, S.Pd', subjectCode: 'PKWU' },
+  { code: 'H46', name: 'DHELLA ROCHMATUL.M,S.Pd', subjectCode: 'FIS' },
+  { code: 'G47', name: 'ELLSA NATASHA.B, M.Pd', subjectCode: 'MAT' },
+  { code: 'G48', name: 'LAURA WIDYA P., S.Pd', subjectCode: 'MAT' },
+  { code: 'L49', name: 'FRISCA DANI AURORA.U,S.Pd', subjectCode: 'GEO' },
+  { code: 'D50', name: 'SINDY DWI JAYANTI,M.Pd.Gr', subjectCode: 'SEJ' },
+  { code: 'N51', name: 'M. YUSUF FAIZAL AUFA,S.Sos', subjectCode: 'SOS' },
+  { code: 'T51', name: 'M. YUSUF FAIZAL AUFA,S.Sos', subjectCode: 'TIK' },
+  { code: 'I52', name: 'ARLYNDA WIDYA APSARI, S.Pd', subjectCode: 'BIO' },
+  { code: 'M53', name: 'MIFTAHUL JANNAH, S.SN', subjectCode: 'SENI' },
+  { code: 'S53', name: 'MIFTAHUL JANNAH, S.SN', subjectCode: 'PKWU' },
+  { code: 'O54', name: 'DIAN INDRI PRATIWI, S.Kel', subjectCode: 'BHR' },
+  { code: 'E55', name: 'MOHAMMAD ASIKIN', subjectCode: 'BIG' },
+  { code: 'C56', name: 'OTY MEIGAN, S.Pd', subjectCode: 'BIN' },
+  { code: 'G57', name: 'NESA AYU DINA, M.Pd', subjectCode: 'MAT' },
+  { code: 'F58', name: 'BIMANTARA YUNANDI P., S.Pd', subjectCode: 'PJOK' },
+  { code: 'C59', name: 'CYNTIA PUTRI, S.Pd', subjectCode: 'BIN' },
+  { code: 'H60', name: 'MUHAMMAD ZAINAL ARIFIN, S.Pd', subjectCode: 'FIS' },
+  { code: 'D61', name: 'ACHMAD FIRMANDA DWIPUTRA, S.Pd', subjectCode: 'SEJ' },
+  { code: 'L62', name: 'Karana Yankumara, S.pd', subjectCode: 'GEO' },
+  { code: 'B62', name: 'Karana Yankumara, S.pd', subjectCode: 'PKN' },
+  { code: 'D63', name: 'LATIFAH HANUN, S.Pd', subjectCode: 'SEJ' },
+];
+
+const CLASS_SCHEDULE_SEEDS = [
+  { day: 'Senin', teacherCode: 'H46', subjectCode: 'FIS', hours: 2 },
+  { day: 'Senin', teacherCode: 'B7', subjectCode: 'PKN', hours: 2 },
+  { day: 'Senin', teacherCode: 'G6', subjectCode: 'MAT', hours: 2 },
+  { day: 'Senin', teacherCode: 'E5', subjectCode: 'BIG', hours: 2 },
+  { day: 'Senin', teacherCode: 'F58', subjectCode: 'PJOK', hours: 1 },
+  { day: 'Senin', teacherCode: 'U12', subjectCode: 'BK', hours: 1 },
+  { day: 'Selasa', teacherCode: 'T42', subjectCode: 'TIK', hours: 2 },
+  { day: 'Selasa', teacherCode: 'G6', subjectCode: 'MAT', hours: 2 },
+  { day: 'Selasa', teacherCode: 'G47', subjectCode: 'MAT', hours: 2 },
+  { day: 'Selasa', teacherCode: 'C56', subjectCode: 'BIN', hours: 2 },
+  { day: 'Selasa', teacherCode: 'D63', subjectCode: 'SEJ', hours: 2 },
+  { day: 'Rabu', teacherCode: 'T42', subjectCode: 'TIK', hours: 3 },
+  { day: 'Rabu', teacherCode: 'O33', subjectCode: 'BHR', hours: 1 },
+  { day: 'Rabu', teacherCode: 'S53', subjectCode: 'PKWU', hours: 2 },
+  { day: 'Rabu', teacherCode: 'J16', subjectCode: 'KIM', hours: 1 },
+  { day: 'Rabu', teacherCode: 'H46', subjectCode: 'FIS', hours: 3 },
+  { day: 'Kamis', teacherCode: 'A17', subjectCode: 'PAI', hours: 3 },
+  { day: 'Kamis', teacherCode: 'R37', subjectCode: 'BJW', hours: 1 },
+  { day: 'Kamis', teacherCode: 'F58', subjectCode: 'PJOK', hours: 2 },
+  { day: 'Kamis', teacherCode: 'J16', subjectCode: 'KIM', hours: 2 },
+  { day: 'Kamis', teacherCode: 'C56', subjectCode: 'BIN', hours: 2 },
+  { day: 'Jumat', teacherCode: 'M14', subjectCode: 'SENI', hours: 2 },
+  { day: 'Jumat', teacherCode: 'J16', subjectCode: 'KIM', hours: 2 },
+  { day: 'Jumat', teacherCode: 'G47', subjectCode: 'MAT', hours: 3 },
+];
+
+const TEACHER_CLASS_SEEDS = [
+  ...new Map(
+    CLASS_SCHEDULE_SEEDS.map(({ teacherCode, subjectCode }) => [
+      `${teacherCode}:${subjectCode}`,
+      { teacherCode, subjectCode },
+    ]),
+  ).values(),
+];
 
 const resetOrder = [
   'student_badges',
@@ -48,6 +236,53 @@ const daysFromNow = (days, hour = 23, minute = 59) => {
   date.setDate(date.getDate() + days);
   date.setHours(hour, minute, 0, 0);
   return date;
+};
+
+const studentKey = (nis) => `nis${nis}`;
+
+const teacherKey = (code) => `teacher${code}`;
+
+const getInitials = (name) =>
+  name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0])
+    .join('')
+    .toUpperCase();
+
+const getFirstName = (name) => name.split(/\s+/).filter(Boolean)[0] || name;
+
+const getStudentEmail = (student, index) =>
+  index === 0 ? 'student@edusense.ai' : `student.${student.nis}@edusense.ai`;
+
+const getTeacherEmail = (teacher) =>
+  teacher.code === HOMEROOM_TEACHER_CODE ? 'teacher@edusense.ai' : `teacher.${teacher.code.toLowerCase()}@edusense.ai`;
+
+const buildStudentProfile = (index) => {
+  const levelCycle = ['intermediate', 'basic', 'advanced', 'basic', 'intermediate', 'advanced'];
+  const riskCycle = ['safe', 'warning', 'safe', 'danger', 'warning', 'safe', 'safe', 'warning'];
+  const scoreCycle = [428, 196, 612, 82, 244, 538, 356, 164];
+  const streakCycle = [12, 3, 18, 0, 5, 9, 7, 2, 14, 4];
+
+  return {
+    current_level: levelCycle[index % levelCycle.length],
+    risk_status: riskCycle[index % riskCycle.length],
+    total_score: scoreCycle[index % scoreCycle.length] + Math.floor(index / scoreCycle.length) * 23,
+    streak_days: streakCycle[index % streakCycle.length],
+  };
+};
+
+const levelFromScore = (score) => {
+  if (score >= 85) {
+    return 'advanced';
+  }
+
+  if (score >= 65) {
+    return 'intermediate';
+  }
+
+  return 'basic';
 };
 
 const insertRow = async (connection, table, payload) => {
@@ -152,168 +387,98 @@ const seed = async () => {
 
     const users = {
       admin: await createUser({ role: 'admin', name: 'Admin Sekolah', email: 'admin@edusense.ai', avatar: 'AS' }),
-      teacherRani: await createUser({ role: 'teacher', name: 'Bu Rani Wijaya', email: 'teacher@edusense.ai', avatar: 'RW' }),
-      teacherBima: await createUser({ role: 'teacher', name: 'Pak Bima Santoso', email: 'teacher2@edusense.ai', avatar: 'BS' }),
-      alya: await createUser({ role: 'student', name: 'Alya Prameswari', email: 'student@edusense.ai', avatar: 'AP' }),
-      raka: await createUser({ role: 'student', name: 'Raka Putra', email: 'raka@edusense.ai', avatar: 'RP' }),
-      nadia: await createUser({ role: 'student', name: 'Nadia Zahra', email: 'nadia@edusense.ai', avatar: 'NZ' }),
-      dimas: await createUser({ role: 'student', name: 'Dimas Akbar', email: 'dimas@edusense.ai', avatar: 'DA' }),
-      siti: await createUser({ role: 'student', name: 'Siti Aulia', email: 'siti@edusense.ai', avatar: 'SA' }),
     };
 
-    const teachers = {
-      rani: await insertRow(connection, 'teachers', {
+    for (const teacher of TEACHER_SEEDS) {
+      users[teacherKey(teacher.code)] = await createUser({
+        role: 'teacher',
+        name: teacher.name,
+        email: getTeacherEmail(teacher),
+        avatar: getInitials(teacher.name),
+      });
+    }
+
+    for (const [index, student] of STUDENT_SEEDS.entries()) {
+      users[studentKey(student.nis)] = await createUser({
+        role: 'student',
+        name: student.name,
+        email: getStudentEmail(student, index),
+        avatar: getInitials(student.name),
+      });
+    }
+
+    const teachers = {};
+
+    for (const teacher of TEACHER_SEEDS) {
+      teachers[teacher.code] = await insertRow(connection, 'teachers', {
         school_id: schoolId,
-        user_id: users.teacherRani,
-        employee_number: 'NIP-DEMO-001',
+        user_id: users[teacherKey(teacher.code)],
+        employee_number: teacher.code,
         position: 'teacher',
-        specialization: 'Matematika',
-      }),
-      bima: await insertRow(connection, 'teachers', {
-        school_id: schoolId,
-        user_id: users.teacherBima,
-        employee_number: 'NIP-DEMO-002',
-        position: 'teacher',
-        specialization: 'Fisika',
-      }),
-    };
+        specialization: subjectNameByCode.get(teacher.subjectCode) || teacher.subjectCode,
+      });
+    }
 
     const classes = {
-      xiIpa2: await insertRow(connection, 'classes', {
+      xiC1: await insertRow(connection, 'classes', {
         school_id: schoolId,
-        homeroom_teacher_id: teachers.rani,
-        name: 'XI IPA 2',
-        grade_level: 'XI',
-        academic_year: SCHOOL_YEAR,
-      }),
-      xiIpa1: await insertRow(connection, 'classes', {
-        school_id: schoolId,
-        homeroom_teacher_id: teachers.bima,
-        name: 'XI IPA 1',
-        grade_level: 'XI',
-        academic_year: SCHOOL_YEAR,
-      }),
-      xIps1: await insertRow(connection, 'classes', {
-        school_id: schoolId,
-        homeroom_teacher_id: null,
-        name: 'X IPS 1',
-        grade_level: 'X',
-        academic_year: SCHOOL_YEAR,
+        homeroom_teacher_id: teachers[HOMEROOM_TEACHER_CODE],
+        name: CLASS_SEED.name,
+        grade_level: CLASS_SEED.gradeLevel,
+        academic_year: CLASS_SEED.academicYear,
       }),
     };
 
-    const students = {
-      alya: await insertRow(connection, 'students', {
-        school_id: schoolId,
-        user_id: users.alya,
-        class_id: classes.xiIpa2,
-        student_number: 'SIS-DEMO-001',
-        current_level: 'intermediate',
-        risk_status: 'safe',
-        total_score: 428,
-        streak_days: 12,
-      }),
-      raka: await insertRow(connection, 'students', {
-        school_id: schoolId,
-        user_id: users.raka,
-        class_id: classes.xiIpa2,
-        student_number: 'SIS-DEMO-002',
-        current_level: 'basic',
-        risk_status: 'warning',
-        total_score: 196,
-        streak_days: 3,
-      }),
-      nadia: await insertRow(connection, 'students', {
-        school_id: schoolId,
-        user_id: users.nadia,
-        class_id: classes.xiIpa1,
-        student_number: 'SIS-DEMO-003',
-        current_level: 'advanced',
-        risk_status: 'safe',
-        total_score: 612,
-        streak_days: 18,
-      }),
-      dimas: await insertRow(connection, 'students', {
-        school_id: schoolId,
-        user_id: users.dimas,
-        class_id: classes.xiIpa2,
-        student_number: 'SIS-DEMO-004',
-        current_level: 'basic',
-        risk_status: 'danger',
-        total_score: 82,
-        streak_days: 0,
-      }),
-      siti: await insertRow(connection, 'students', {
-        school_id: schoolId,
-        user_id: users.siti,
-        class_id: classes.xIps1,
-        student_number: 'SIS-DEMO-005',
-        current_level: 'intermediate',
-        risk_status: 'warning',
-        total_score: 244,
-        streak_days: 5,
-      }),
-    };
+    const students = {};
+    const studentProfiles = {};
 
-    const subjects = {
-      math: await insertRow(connection, 'subjects', {
+    for (const [index, student] of STUDENT_SEEDS.entries()) {
+      const key = studentKey(student.nis);
+      const profile = buildStudentProfile(index);
+      studentProfiles[key] = profile;
+      students[key] = await insertRow(connection, 'students', {
         school_id: schoolId,
-        name: 'Matematika',
-        code: 'MTK-WJB',
-        description: 'Fungsi linear, persamaan, gradien, dan pemecahan masalah.',
-      }),
-      physics: await insertRow(connection, 'subjects', {
-        school_id: schoolId,
-        name: 'Fisika',
-        code: 'FSK',
-        description: 'Gerak, gaya, energi, dan eksperimen dasar.',
-      }),
-      biology: await insertRow(connection, 'subjects', {
-        school_id: schoolId,
-        name: 'Biologi',
-        code: 'BIO',
-        description: 'Sel, sistem tubuh, ekosistem, dan literasi sains.',
-      }),
-      english: await insertRow(connection, 'subjects', {
-        school_id: schoolId,
-        name: 'Bahasa Inggris',
-        code: 'BIG',
-        description: 'Reading, grammar, writing, dan analytical exposition.',
-      }),
-    };
+        user_id: users[key],
+        class_id: classes.xiC1,
+        student_number: student.nis,
+        ...profile,
+      });
+    }
 
-    const teacherClassRows = [
-      [teachers.rani, classes.xiIpa2, subjects.math, 'subject_teacher'],
-      [teachers.rani, classes.xiIpa1, subjects.math, 'subject_teacher'],
-      [teachers.rani, classes.xIps1, subjects.math, 'assistant_teacher'],
-      [teachers.bima, classes.xiIpa2, subjects.physics, 'subject_teacher'],
-      [teachers.bima, classes.xiIpa1, subjects.physics, 'subject_teacher'],
-      [teachers.bima, classes.xIps1, subjects.biology, 'assistant_teacher'],
-    ];
+    const subjects = {};
 
-    for (const [teacher_id, class_id, subject_id, assignment_type] of teacherClassRows) {
+    for (const subject of SUBJECT_SEEDS) {
+      subjects[subject.code] = await insertRow(connection, 'subjects', {
+        school_id: schoolId,
+        name: subject.name,
+        code: subject.code,
+        description: `${subject.name} untuk kelas ${CLASS_SEED.name}.`,
+      });
+    }
+
+    for (const { teacherCode, subjectCode } of TEACHER_CLASS_SEEDS) {
       await insertRow(connection, 'teacher_classes', {
         school_id: schoolId,
-        teacher_id,
-        class_id,
-        subject_id,
-        assignment_type,
+        teacher_id: teachers[teacherCode],
+        class_id: classes.xiC1,
+        subject_id: subjects[subjectCode],
+        assignment_type: 'subject_teacher',
       });
     }
 
     const materialSeed = [
-      ['mathBasic', subjects.math, 'Konsep Fungsi Linear', 'Memahami bentuk y = ax + b, nilai awal, dan laju perubahan.', 'basic', 15],
-      ['mathMid', subjects.math, 'Gradien dan Grafik', 'Menganalisis kemiringan garis dari persamaan dan grafik.', 'intermediate', 20],
-      ['mathAdv', subjects.math, 'Analisis Soal Cerita Linear', 'Menerjemahkan konteks sehari-hari menjadi model linear.', 'advanced', 25],
-      ['physicsBasic', subjects.physics, 'Gerak Lurus Beraturan', 'Konsep jarak, waktu, kecepatan, dan grafik sederhana.', 'basic', 18],
-      ['physicsMid', subjects.physics, 'Hukum Newton I', 'Inersia, resultan gaya, dan contoh gaya seimbang.', 'intermediate', 22],
-      ['physicsAdv', subjects.physics, 'Energi dan Usaha', 'Hubungan usaha, perubahan energi, dan efisiensi.', 'advanced', 28],
-      ['biologyBasic', subjects.biology, 'Struktur Sel', 'Organel sel dan fungsi dasarnya dalam kehidupan.', 'basic', 16],
-      ['biologyMid', subjects.biology, 'Sistem Pencernaan', 'Organ pencernaan, enzim, dan alur proses makanan.', 'intermediate', 21],
-      ['biologyAdv', subjects.biology, 'Ekosistem dan Rantai Makanan', 'Interaksi makhluk hidup, energi, dan keseimbangan ekosistem.', 'advanced', 24],
-      ['englishBasic', subjects.english, 'Descriptive Text', 'Mengenali struktur dan ciri kebahasaan descriptive text.', 'basic', 14],
-      ['englishMid', subjects.english, 'Simple Past Tense', 'Menggunakan bentuk lampau untuk menceritakan peristiwa.', 'intermediate', 19],
-      ['englishAdv', subjects.english, 'Analytical Exposition', 'Menyusun argumen, thesis, dan reiteration secara runtut.', 'advanced', 26],
+      ['mathBasic', subjects.MAT, 'Konsep Fungsi Linear', 'Memahami bentuk y = ax + b, nilai awal, dan laju perubahan.', 'basic', 15],
+      ['mathMid', subjects.MAT, 'Gradien dan Grafik', 'Menganalisis kemiringan garis dari persamaan dan grafik.', 'intermediate', 20],
+      ['mathAdv', subjects.MAT, 'Analisis Soal Cerita Linear', 'Menerjemahkan konteks sehari-hari menjadi model linear.', 'advanced', 25],
+      ['physicsBasic', subjects.FIS, 'Gerak Lurus Beraturan', 'Konsep jarak, waktu, kecepatan, dan grafik sederhana.', 'basic', 18],
+      ['physicsMid', subjects.FIS, 'Hukum Newton I', 'Inersia, resultan gaya, dan contoh gaya seimbang.', 'intermediate', 22],
+      ['physicsAdv', subjects.FIS, 'Energi dan Usaha', 'Hubungan usaha, perubahan energi, dan efisiensi.', 'advanced', 28],
+      ['biologyBasic', subjects.BIO, 'Struktur Sel', 'Organel sel dan fungsi dasarnya dalam kehidupan.', 'basic', 16],
+      ['biologyMid', subjects.BIO, 'Sistem Pencernaan', 'Organ pencernaan, enzim, dan alur proses makanan.', 'intermediate', 21],
+      ['biologyAdv', subjects.BIO, 'Ekosistem dan Rantai Makanan', 'Interaksi makhluk hidup, energi, dan keseimbangan ekosistem.', 'advanced', 24],
+      ['englishBasic', subjects.BIG, 'Descriptive Text', 'Mengenali struktur dan ciri kebahasaan descriptive text.', 'basic', 14],
+      ['englishMid', subjects.BIG, 'Simple Past Tense', 'Menggunakan bentuk lampau untuk menceritakan peristiwa.', 'intermediate', 19],
+      ['englishAdv', subjects.BIG, 'Analytical Exposition', 'Menyusun argumen, thesis, dan reiteration secara runtut.', 'advanced', 26],
     ];
     const materials = {};
 
@@ -330,7 +495,7 @@ const seed = async () => {
 
     const quizzes = {
       diagnostic: await insertRow(connection, 'quizzes', {
-        subject_id: subjects.math,
+        subject_id: subjects.MAT,
         material_id: materials.mathBasic,
         title: 'Tes Diagnostik AI - Fungsi Linear',
         quiz_type: 'diagnostic',
@@ -338,7 +503,7 @@ const seed = async () => {
         duration_minutes: 20,
       }),
       mathPractice: await insertRow(connection, 'quizzes', {
-        subject_id: subjects.math,
+        subject_id: subjects.MAT,
         material_id: materials.mathMid,
         title: 'Kuis Adaptif - Gradien dan Grafik',
         quiz_type: 'practice',
@@ -346,7 +511,7 @@ const seed = async () => {
         duration_minutes: 15,
       }),
       physicsPractice: await insertRow(connection, 'quizzes', {
-        subject_id: subjects.physics,
+        subject_id: subjects.FIS,
         material_id: materials.physicsBasic,
         title: 'Latihan Cepat - Gerak Lurus',
         quiz_type: 'practice',
@@ -354,7 +519,7 @@ const seed = async () => {
         duration_minutes: 12,
       }),
       englishFinal: await insertRow(connection, 'quizzes', {
-        subject_id: subjects.english,
+        subject_id: subjects.BIG,
         material_id: materials.englishMid,
         title: 'Final Mini - Simple Past',
         quiz_type: 'final',
@@ -362,7 +527,7 @@ const seed = async () => {
         duration_minutes: 18,
       }),
       biologyPractice: await insertRow(connection, 'quizzes', {
-        subject_id: subjects.biology,
+        subject_id: subjects.BIO,
         material_id: materials.biologyBasic,
         title: 'Latihan Struktur Sel',
         quiz_type: 'practice',
@@ -481,168 +646,125 @@ const seed = async () => {
       return attemptId;
     };
 
-    const attempts = {
-      alyaDiagnostic: await createAttempt({
-        studentKey: 'alya',
-        quizKey: 'diagnostic',
-        correctCount: 8,
-        score: 82,
-        accuracyRate: 80,
-        seconds: 940,
-        attemptNumber: 1,
-        level: 'intermediate',
-        trend: 'improving',
-        startedAt: daysAgo(7, 9),
-        submittedAt: daysAgo(7, 9, 18),
-      }),
-      alyaPractice: await createAttempt({
-        studentKey: 'alya',
-        quizKey: 'mathPractice',
-        correctCount: 4,
-        score: 92,
-        accuracyRate: 100,
-        seconds: 780,
-        attemptNumber: 1,
-        level: 'advanced',
-        trend: 'improving',
-        startedAt: daysAgo(1, 15),
-        submittedAt: daysAgo(1, 15, 13),
-      }),
-      rakaDiagnostic: await createAttempt({
-        studentKey: 'raka',
-        quizKey: 'diagnostic',
-        correctCount: 5,
-        score: 50,
-        accuracyRate: 50,
-        seconds: 1220,
-        attemptNumber: 1,
-        level: 'basic',
-        trend: 'stable',
-        startedAt: daysAgo(3, 10),
-        submittedAt: daysAgo(3, 10, 24),
-      }),
-      nadiaMath: await createAttempt({
-        studentKey: 'nadia',
-        quizKey: 'mathPractice',
-        correctCount: 4,
-        score: 96,
-        accuracyRate: 100,
-        seconds: 640,
-        attemptNumber: 1,
-        level: 'advanced',
-        trend: 'improving',
-        startedAt: daysAgo(2, 11),
-        submittedAt: daysAgo(2, 11, 10),
-      }),
-      dimasPhysics: await createAttempt({
-        studentKey: 'dimas',
-        quizKey: 'physicsPractice',
-        correctCount: 1,
-        score: 25,
-        accuracyRate: 25,
-        seconds: 980,
-        attemptNumber: 1,
-        level: 'basic',
-        trend: 'declining',
-        startedAt: daysAgo(1, 8),
-        submittedAt: daysAgo(1, 8, 16),
-      }),
-      sitiEnglish: await createAttempt({
-        studentKey: 'siti',
-        quizKey: 'englishFinal',
-        correctCount: 3,
-        score: 75,
-        accuracyRate: 75,
-        seconds: 850,
-        attemptNumber: 1,
-        level: 'intermediate',
-        trend: 'stable',
-        startedAt: daysAgo(4, 13),
-        submittedAt: daysAgo(4, 13, 14),
-      }),
-    };
+    const quizCycle = ['diagnostic', 'mathPractice', 'physicsPractice', 'englishFinal', 'biologyPractice'];
+    const scoreCycle = [82, 54, 94, 32, 74, 88, 67, 46];
+    const trendCycle = ['improving', 'stable', 'improving', 'declining', 'stable'];
+    const attemptIdsByStudent = {};
+    const attemptScoresByStudent = {};
 
-    const progressRows = [
-      ['alya', 'mathBasic', 'completed', 100, 1800, daysAgo(8)],
-      ['alya', 'mathMid', 'completed', 100, 2100, daysAgo(2)],
-      ['alya', 'mathAdv', 'in_progress', 64, 920, null],
-      ['raka', 'mathBasic', 'in_progress', 45, 1160, null],
-      ['raka', 'mathMid', 'not_started', 0, 0, null],
-      ['nadia', 'mathBasic', 'completed', 100, 1500, daysAgo(10)],
-      ['nadia', 'mathMid', 'completed', 100, 1600, daysAgo(5)],
-      ['nadia', 'mathAdv', 'completed', 100, 1900, daysAgo(1)],
-      ['dimas', 'physicsBasic', 'in_progress', 28, 780, null],
-      ['siti', 'englishBasic', 'completed', 100, 1200, daysAgo(6)],
-      ['siti', 'englishMid', 'in_progress', 58, 860, null],
-    ];
+    for (const [index, student] of STUDENT_SEEDS.entries()) {
+      const key = studentKey(student.nis);
+      const quizKey = quizCycle[index % quizCycle.length];
+      const questionCount = questionsByQuiz[quizKey].length;
+      const score = scoreCycle[index % scoreCycle.length];
+      const correctCount = Math.max(1, Math.min(questionCount, Math.round((questionCount * score) / 100)));
+      const startedHour = 8 + (index % 8);
 
-    for (const [studentKey, materialKey, status, progress_percent, time_spent_seconds, completed_at] of progressRows) {
-      await insertRow(connection, 'learning_progress', {
-        student_id: students[studentKey],
-        material_id: materials[materialKey],
-        status,
-        progress_percent,
-        time_spent_seconds,
-        completed_at,
+      attemptScoresByStudent[key] = score;
+      attemptIdsByStudent[key] = await createAttempt({
+        studentKey: key,
+        quizKey,
+        correctCount,
+        score,
+        accuracyRate: Math.round((correctCount / questionCount) * 100),
+        seconds: 620 + index * 31,
+        attemptNumber: 1,
+        level: levelFromScore(score),
+        trend: trendCycle[index % trendCycle.length],
+        startedAt: daysAgo((index % 10) + 1, startedHour),
+        submittedAt: daysAgo((index % 10) + 1, startedHour, 17),
       });
     }
 
-    const recommendationRows = [
-      ['alya', 'mathAdv', 'challenge', 'Alya sudah stabil di konsep gradien. Lanjutkan soal cerita level lanjutan.', 'low', 'pending'],
-      ['raka', 'mathBasic', 'remedial', 'Akurasi dasar masih 50%. Ulangi persamaan sederhana dan latihan bertahap.', 'high', 'pending'],
-      ['nadia', 'physicsAdv', 'challenge', 'Performa tinggi. Beri tantangan lintas konsep untuk menjaga momentum.', 'low', 'pending'],
-      ['dimas', 'physicsBasic', 'remedial', 'Nilai GLB rendah dan trend menurun. Butuh pendampingan guru.', 'high', 'pending'],
-      ['siti', 'englishMid', 'review', 'Perlu memperkuat pola kalimat simple past sebelum final berikutnya.', 'medium', 'pending'],
-      ['alya', 'mathMid', 'review', 'Review singkat selesai setelah kuis adaptif terakhir.', 'low', 'done'],
-    ];
+    for (const [index, student] of STUDENT_SEEDS.entries()) {
+      const key = studentKey(student.nis);
+      const profile = studentProfiles[key];
+      const secondaryStatus = profile.risk_status === 'danger' ? 'not_started' : 'in_progress';
+      const progressRows = [
+        ['mathBasic', 'completed', 100, 1300 + index * 18, daysAgo((index % 12) + 6)],
+        [
+          'mathMid',
+          profile.current_level === 'basic' ? secondaryStatus : 'completed',
+          profile.current_level === 'basic' ? 35 + (index % 25) : 100,
+          720 + index * 21,
+          profile.current_level === 'basic' ? null : daysAgo((index % 8) + 2),
+        ],
+        [
+          index % 3 === 0 ? 'physicsBasic' : index % 3 === 1 ? 'englishBasic' : 'mathAdv',
+          profile.current_level === 'advanced' ? 'completed' : 'in_progress',
+          profile.current_level === 'advanced' ? 100 : 42 + (index % 36),
+          560 + index * 16,
+          profile.current_level === 'advanced' ? daysAgo((index % 5) + 1) : null,
+        ],
+      ];
 
-    for (const [studentKey, materialKey, recommendation_type, reason, priority, status] of recommendationRows) {
+      for (const [materialKey, status, progress_percent, time_spent_seconds, completed_at] of progressRows) {
+        await insertRow(connection, 'learning_progress', {
+          student_id: students[key],
+          material_id: materials[materialKey],
+          status,
+          progress_percent,
+          time_spent_seconds,
+          completed_at,
+        });
+      }
+    }
+
+    for (const [index, student] of STUDENT_SEEDS.entries()) {
+      const key = studentKey(student.nis);
+      const profile = studentProfiles[key];
+      const firstName = getFirstName(student.name);
+      const recommendation =
+        profile.risk_status === 'danger'
+          ? ['mathBasic', 'remedial', `${firstName} perlu penguatan konsep dasar dan pendampingan guru minggu ini.`, 'high']
+          : profile.risk_status === 'warning'
+            ? ['mathMid', 'review', `${firstName} perlu review latihan bertahap agar progres lebih stabil.`, 'medium']
+            : profile.current_level === 'advanced'
+              ? ['mathAdv', 'challenge', `${firstName} siap mendapat tantangan soal cerita level lanjutan.`, 'low']
+              : ['physicsBasic', 'next_material', `${firstName} dapat melanjutkan materi lintas konsep dengan ritme normal.`, 'medium'];
+
       await insertRow(connection, 'ai_recommendations', {
-        student_id: students[studentKey],
-        material_id: materialKey ? materials[materialKey] : null,
-        recommendation_type,
-        reason,
-        priority,
-        status,
+        student_id: students[key],
+        material_id: materials[recommendation[0]],
+        recommendation_type: recommendation[1],
+        reason: recommendation[2],
+        priority: recommendation[3],
+        status: index % 9 === 0 ? 'done' : 'pending',
       });
     }
 
-    const featureRows = [
-      ['alya', 1.34, 86, 91, 88, 8],
-      ['raka', 0.82, 58, 64, 59, 24],
-      ['nadia', 1.52, 94, 96, 92, 4],
-      ['dimas', 0.61, 42, 38, 44, 33],
-      ['siti', 0.98, 70, 73, 68, 16],
-    ];
+    for (const [index, student] of STUDENT_SEEDS.entries()) {
+      const key = studentKey(student.nis);
+      const score = attemptScoresByStudent[key];
+      const profile = studentProfiles[key];
+      const consistency = Math.min(98, 48 + profile.streak_days * 3 + (index % 8));
+      const engagement = Math.min(96, 52 + profile.streak_days * 2 + (score >= 75 ? 12 : 0));
 
-    for (const [studentKey, learning_speed, accuracy_rate, consistency_score, engagement_score, retry_rate] of featureRows) {
       await insertRow(connection, 'student_features', {
-        student_id: students[studentKey],
-        learning_speed,
-        accuracy_rate,
-        consistency_score,
-        engagement_score,
-        retry_rate,
+        student_id: students[key],
+        learning_speed: Number((0.65 + (score / 100) * 0.9).toFixed(2)),
+        accuracy_rate: score,
+        consistency_score: consistency,
+        engagement_score: engagement,
+        retry_rate: Math.max(4, 34 - Math.round(score / 4)),
         last_calculated_at: daysAgo(0, 7),
       });
     }
 
-    const predictionRows = [
-      ['alya', 'advanced', 'low', 91, 'Akurasi tinggi dan streak konsisten selama 12 hari.'],
-      ['raka', 'basic', 'medium', 74, 'Butuh remedial konsep dasar dan pemantauan progres mingguan.'],
-      ['nadia', 'advanced', 'low', 95, 'Performa stabil di level lanjutan.'],
-      ['dimas', 'basic', 'high', 88, 'Skor rendah, engagement turun, dan percobaan terakhir menurun.'],
-      ['siti', 'intermediate', 'medium', 79, 'Kemajuan cukup baik tetapi konsistensi jawaban grammar perlu diperkuat.'],
-    ];
+    for (const [index, student] of STUDENT_SEEDS.entries()) {
+      const key = studentKey(student.nis);
+      const profile = studentProfiles[key];
+      const score = attemptScoresByStudent[key];
+      const riskPrediction =
+        profile.risk_status === 'danger' ? 'high' : profile.risk_status === 'warning' ? 'medium' : 'low';
 
-    for (const [studentKey, predicted_level, risk_prediction, confidence, prediction_reason] of predictionRows) {
       await insertRow(connection, 'ai_predictions', {
-        student_id: students[studentKey],
-        predicted_level,
-        risk_prediction,
-        confidence,
+        student_id: students[key],
+        predicted_level: levelFromScore(score),
+        risk_prediction: riskPrediction,
+        confidence: Math.min(97, Math.max(68, score + 6)),
         model_version: 'demo-v1.0',
-        prediction_reason,
+        prediction_reason: `${getFirstName(student.name)} berada pada level ${levelFromScore(score)} dengan status risiko ${riskPrediction}.`,
         created_at: daysAgo(0, 7, 30),
       });
     }
@@ -685,48 +807,70 @@ const seed = async () => {
       }),
     };
 
-    const studentBadgeRows = [
-      ['alya', badges.starter, daysAgo(9)],
-      ['alya', badges.streak, daysAgo(3)],
-      ['alya', badges.quiz, daysAgo(1)],
-      ['alya', badges.diagnostic, daysAgo(7)],
-      ['raka', badges.starter, daysAgo(3)],
-      ['raka', badges.diagnostic, daysAgo(3)],
-      ['nadia', badges.starter, daysAgo(15)],
-      ['nadia', badges.streak, daysAgo(8)],
-      ['nadia', badges.mastery, daysAgo(2)],
-      ['dimas', badges.starter, daysAgo(2)],
-      ['siti', badges.starter, daysAgo(7)],
-    ];
-
-    for (const [studentKey, badge_id, earned_at] of studentBadgeRows) {
-      await insertRow(connection, 'student_badges', {
+    const addStudentBadge = async (key, badgeId, earnedAt) =>
+      insertRow(connection, 'student_badges', {
         school_id: schoolId,
-        student_id: students[studentKey],
-        badge_id,
-        earned_at,
+        student_id: students[key],
+        badge_id: badgeId,
+        earned_at: earnedAt,
       });
+
+    for (const [index, student] of STUDENT_SEEDS.entries()) {
+      const key = studentKey(student.nis);
+      const profile = studentProfiles[key];
+      const score = attemptScoresByStudent[key];
+
+      await addStudentBadge(key, badges.starter, daysAgo((index % 12) + 3));
+
+      if (profile.streak_days >= 7) {
+        await addStudentBadge(key, badges.streak, daysAgo((index % 5) + 1));
+      }
+
+      if (score >= 80) {
+        await addStudentBadge(key, badges.quiz, daysAgo((index % 4) + 1));
+      }
+
+      if (profile.current_level === 'advanced') {
+        await addStudentBadge(key, badges.mastery, daysAgo((index % 6) + 1));
+      }
+
+      if (index % quizCycle.length === 0) {
+        await addStudentBadge(key, badges.diagnostic, daysAgo((index % 7) + 1));
+      }
     }
 
-    const activityRows = [
-      ['alya', 'login', 'Alya masuk ke dashboard siswa.', { role: 'student' }, daysAgo(0, 7, 45)],
-      ['alya', 'view_material', 'Membuka materi Analisis Soal Cerita Linear.', { material_id: materials.mathAdv }, daysAgo(0, 8)],
-      ['alya', 'submit_quiz', 'Mengirim kuis adaptif Gradien dan Grafik.', { attempt_id: attempts.alyaPractice, score: 92 }, daysAgo(1, 15, 13)],
-      ['alya', 'earn_badge', 'Mendapat lencana Jago Kuis.', { badge_id: badges.quiz }, daysAgo(1, 15, 14)],
-      ['raka', 'submit_quiz', 'Mengirim tes diagnostik AI.', { attempt_id: attempts.rakaDiagnostic, score: 50 }, daysAgo(3, 10, 24)],
-      ['nadia', 'earn_badge', 'Mendapat Mastery Badge.', { badge_id: badges.mastery }, daysAgo(2, 11, 11)],
-      ['dimas', 'start_quiz', 'Memulai latihan Gerak Lurus.', { quiz_id: quizzes.physicsPractice }, daysAgo(1, 8)],
-      ['siti', 'view_material', 'Membuka materi Simple Past Tense.', { material_id: materials.englishMid }, daysAgo(4, 12)],
-    ];
+    for (const [index, student] of STUDENT_SEEDS.entries()) {
+      const key = studentKey(student.nis);
+      const firstName = getFirstName(student.name);
+      const score = attemptScoresByStudent[key];
+      const activityRows = [
+        ['login', `${firstName} masuk ke dashboard siswa.`, { role: 'student', nis: student.nis }, daysAgo(0, 7 + (index % 8), 15)],
+        [
+          'submit_quiz',
+          `${firstName} mengirim aktivitas kuis demo.`,
+          { attempt_id: attemptIdsByStudent[key], score },
+          daysAgo((index % 10) + 1, 8 + (index % 8), 20),
+        ],
+      ];
 
-    for (const [studentKey, activity_type, description, metadata, created_at] of activityRows) {
-      await insertRow(connection, 'activity_logs', {
-        student_id: students[studentKey],
-        activity_type,
-        description,
-        metadata: JSON.stringify(metadata),
-        created_at,
-      });
+      if (index % 4 === 0) {
+        activityRows.push([
+          'view_material',
+          `${firstName} membuka materi Analisis Soal Cerita Linear.`,
+          { material_id: materials.mathAdv },
+          daysAgo(0, 9 + (index % 6)),
+        ]);
+      }
+
+      for (const [activity_type, description, metadata, created_at] of activityRows) {
+        await insertRow(connection, 'activity_logs', {
+          student_id: students[key],
+          activity_type,
+          description,
+          metadata: JSON.stringify(metadata),
+          created_at,
+        });
+      }
     }
   });
 };
@@ -736,8 +880,10 @@ seed()
     console.log('Demo seed completed.');
     console.log('Demo accounts:');
     console.log(`- admin@edusense.ai / ${DEMO_PASSWORD}`);
-    console.log(`- teacher@edusense.ai / ${DEMO_PASSWORD}`);
-    console.log(`- student@edusense.ai / ${DEMO_PASSWORD}`);
+    console.log(`- teacher@edusense.ai / ${DEMO_PASSWORD} (${TEACHER_SEEDS.find((teacher) => teacher.code === HOMEROOM_TEACHER_CODE).name})`);
+    console.log(`- student@edusense.ai / ${DEMO_PASSWORD} (${STUDENT_SEEDS[0].name})`);
+    console.log(`Seeded ${STUDENT_SEEDS.length} students into class ${CLASS_SEED.name} (${CLASS_SEED.academicYear}).`);
+    console.log(`Seeded ${TEACHER_SEEDS.length} teacher rows, ${SUBJECT_SEEDS.length} subjects, and ${TEACHER_CLASS_SEEDS.length} class teaching assignments.`);
   })
   .catch((error) => {
     console.error('Demo seed failed.');

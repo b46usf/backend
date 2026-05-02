@@ -15,7 +15,7 @@ const findClasses = async (schoolId, executor = pool) => {
         COUNT(s.id) AS student_count
       FROM classes c
       LEFT JOIN teachers ht ON ht.id = c.homeroom_teacher_id AND ht.school_id = c.school_id
-      LEFT JOIN users hu ON hu.id = ht.user_id
+      LEFT JOIN users hu ON hu.id = ht.user_id AND hu.school_id = ht.school_id
       LEFT JOIN students s ON s.class_id = c.id AND s.school_id = c.school_id
       WHERE c.school_id = ?
       GROUP BY

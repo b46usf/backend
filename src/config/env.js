@@ -21,6 +21,8 @@ const booleanFromEnv = (defaultValue) =>
     }, z.boolean())
     .default(defaultValue);
 
+const RESPONSE_CRYPTO_FALLBACK_SECRET = 'edusense-response-encryption-v1';
+
 const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
   APP_NAME: z.string().default('EduSense AI Backend'),
@@ -36,7 +38,10 @@ const envSchema = z.object({
   CRYPTO_ALGORITHM: z.enum(['aes-256-cbc']).default('aes-256-cbc'),
   CRYPTO_KEY: z.string().default(''),
   CRYPTO_IV: z.string().default(''),
-  API_RESPONSE_ENCRYPTION_ENABLED: booleanFromEnv(false),
+  API_RESPONSE_ENCRYPTION_ENABLED: booleanFromEnv(true),
+  API_RESPONSE_CRYPTO_SECRET: z.string().default(RESPONSE_CRYPTO_FALLBACK_SECRET),
+  API_RESPONSE_CRYPTO_KEY: z.string().default(''),
+  API_RESPONSE_CRYPTO_IV: z.string().default(''),
   BCRYPT_SALT_ROUNDS: z.coerce.number().int().min(8).max(15).default(10),
   DB_HOST: z.string().default('127.0.0.1'),
   DB_PORT: z.coerce.number().int().positive().default(3306),

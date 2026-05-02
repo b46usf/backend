@@ -1,7 +1,16 @@
 const { NotFoundError } = require('../../shared/errors');
+const { decryptText } = require('../../utils/crypto');
 const teacherRepository = require('./teacher.repository');
 
-const listTeachers = async (schoolId) => teacherRepository.findTeachers(schoolId);
+const normalizeTeacher = (teacher) => ({
+  ...teacher,
+  email: decryptText(teacher.email),
+});
+
+const listTeachers = async (schoolId) => {
+  const teachers = await teacherRepository.findTeachers(schoolId);
+  return teachers.map(normalizeTeacher);
+};
 
 const getTeacherById = async (teacherId, schoolId) => {
   const teacher = await teacherRepository.findTeacherById(teacherId, schoolId);
@@ -13,7 +22,7 @@ const getTeacherById = async (teacherId, schoolId) => {
   const classes = await teacherRepository.findTeacherClasses(teacherId, schoolId);
 
   return {
-    ...teacher,
+    ...normalizeTeacher(teacher),
     classes,
   };
 };

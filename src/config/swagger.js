@@ -157,41 +157,23 @@ const openApiSpec = {
         },
       },
     },
+    '/auth/google/login': {
+      post: {
+        tags: ['Umum - Health & Auth'],
+        summary: 'Login via Google OAuth dinonaktifkan',
+        description: 'Login via Google account sedang dimatikan sementara.',
+        responses: {
+          403: errorResponse('Google auth sedang dinonaktifkan'),
+        },
+      },
+    },
     '/auth/google/register': {
       post: {
         tags: ['Umum - Health & Auth'],
-        summary: 'Registrasi siswa/guru via Google OAuth',
-        description: 'Kirim Google idToken. Akun siswa/guru dibuat inactive dan harus diverifikasi admin.',
-        requestBody: {
-          required: true,
-          content: {
-            'application/json': {
-              schema: {
-                type: 'object',
-                required: ['idToken', 'role'],
-                properties: {
-                  idToken: { type: 'string' },
-                  role: { type: 'string', enum: ['student', 'teacher'] },
-                  classId: { type: 'integer', description: 'Wajib untuk role student' },
-                  studentNumber: { type: 'string' },
-                  employeeNumber: { type: 'string' },
-                  position: { type: 'string', enum: ['teacher', 'vice_principal', 'principal'] },
-                  specialization: { type: 'string' },
-                },
-              },
-            },
-          },
-        },
+        summary: 'Registrasi via Google OAuth dinonaktifkan',
+        description: 'Registrasi via Google account sedang dimatikan sementara.',
         responses: {
-          201: successResponse('Google registration submitted for admin verification', {
-            type: 'object',
-            properties: {
-              user: { $ref: '#/components/schemas/User' },
-              verification_status: { type: 'string', example: 'pending_admin_verification' },
-            },
-          }),
-          400: errorResponse('Request tidak valid'),
-          409: errorResponse('Email sudah terdaftar'),
+          403: errorResponse('Google auth sedang dinonaktifkan'),
         },
       },
     },
@@ -1033,9 +1015,9 @@ const openApiSpec = {
           name: { type: 'string', minLength: 3, maxLength: 120, example: 'Budi Santoso' },
           email: { type: 'string', format: 'email', example: 'budi@example.com' },
           password: { type: 'string', minLength: 8, maxLength: 72, example: 'password123' },
-          role: { type: 'string', enum: ['admin', 'teacher', 'student'], default: 'student' },
+          role: { type: 'string', enum: ['teacher', 'student'], default: 'student' },
           avatar: { type: 'string', maxLength: 255, example: 'https://example.com/avatar.png' },
-          classId: { type: 'integer', description: 'Required for student role' },
+          classId: { type: 'integer', description: 'Opsional untuk student; jika kosong memakai kelas pertama sekolah.' },
           studentNumber: { type: 'string', maxLength: 50, example: 'S12345' },
           employeeNumber: { type: 'string', maxLength: 50, example: 'T12345' },
           position: { type: 'string', enum: ['teacher', 'vice_principal', 'principal'], default: 'teacher' },
@@ -1054,7 +1036,8 @@ const openApiSpec = {
         type: 'object',
         properties: {
           user: { $ref: '#/components/schemas/User' },
-          token: { type: 'string', example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...' },
+          token: { type: 'string', nullable: true, example: null },
+          verification_status: { type: 'string', enum: ['active', 'pending_admin_confirmation'] },
         },
       },
       User: {
