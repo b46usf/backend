@@ -1,16 +1,16 @@
 const asyncHandler = require('../../shared/asyncHandler');
+const { paginateList } = require('../../shared/pagination');
 const { sendSuccess } = require('../../shared/response');
 const adminService = require('./admin.service');
 
 const listClasses = asyncHandler(async (req, res) => {
   const classes = await adminService.listClasses(req.user.schoolId);
+  const result = paginateList(classes, req.query);
 
   return sendSuccess(res, {
     message: 'Classes fetched successfully',
-    data: classes,
-    meta: {
-      total: classes.length,
-    },
+    data: result.data,
+    meta: result.meta,
   });
 });
 
@@ -26,13 +26,12 @@ const createClass = asyncHandler(async (req, res) => {
 
 const listSubjects = asyncHandler(async (req, res) => {
   const subjects = await adminService.listSubjects(req.user.schoolId);
+  const result = paginateList(subjects, req.query);
 
   return sendSuccess(res, {
     message: 'Subjects fetched successfully',
-    data: subjects,
-    meta: {
-      total: subjects.length,
-    },
+    data: result.data,
+    meta: result.meta,
   });
 });
 

@@ -1,16 +1,16 @@
 const asyncHandler = require('../../shared/asyncHandler');
+const { paginateList } = require('../../shared/pagination');
 const { sendSuccess } = require('../../shared/response');
 const teacherService = require('./teacher.service');
 
 const listTeachers = asyncHandler(async (req, res) => {
   const teachers = await teacherService.listTeachers(req.user.schoolId);
+  const result = paginateList(teachers, req.query);
 
   return sendSuccess(res, {
     message: 'Teachers fetched successfully',
-    data: teachers,
-    meta: {
-      total: teachers.length,
-    },
+    data: result.data,
+    meta: result.meta,
   });
 });
 

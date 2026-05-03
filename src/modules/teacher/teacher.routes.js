@@ -4,6 +4,7 @@ const { ROLES } = require('../../config/constants');
 const { authenticate } = require('../../middlewares/auth.middleware');
 const { authorize } = require('../../middlewares/role.middleware');
 const { validate } = require('../../middlewares/validation.middleware');
+const { paginationQueryShape } = require('../../shared/pagination');
 const teacherController = require('./teacher.controller');
 
 const router = Router();
@@ -12,6 +13,10 @@ const paramsSchema = {
   params: z.object({
     id: z.coerce.number().int().positive(),
   }),
+};
+
+const querySchema = {
+  query: z.object(paginationQueryShape),
 };
 
 const studentParamsSchema = {
@@ -34,7 +39,7 @@ router.post(
   validate({ ...studentParamsSchema, ...interventionBodySchema }),
   teacherController.createStudentIntervention,
 );
-router.get('/', teacherController.listTeachers);
+router.get('/', validate(querySchema), teacherController.listTeachers);
 router.get('/:id', validate(paramsSchema), teacherController.getTeacherById);
 
 module.exports = router;

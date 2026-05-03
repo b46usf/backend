@@ -4,9 +4,14 @@ const { ROLES } = require('../../config/constants');
 const { authenticate } = require('../../middlewares/auth.middleware');
 const { authorize } = require('../../middlewares/role.middleware');
 const { validate } = require('../../middlewares/validation.middleware');
+const { paginationQueryShape } = require('../../shared/pagination');
 const adminController = require('./admin.controller');
 
 const router = Router();
+
+const paginationSchema = {
+  query: z.object(paginationQueryShape),
+};
 
 const classBodySchema = {
   body: z.object({
@@ -52,9 +57,9 @@ const passwordBodySchema = {
 };
 
 router.use(authenticate, authorize(ROLES.ADMIN));
-router.get('/classes', adminController.listClasses);
+router.get('/classes', validate(paginationSchema), adminController.listClasses);
 router.post('/classes', validate(classBodySchema), adminController.createClass);
-router.get('/subjects', adminController.listSubjects);
+router.get('/subjects', validate(paginationSchema), adminController.listSubjects);
 router.post('/subjects', validate(subjectBodySchema), adminController.createSubject);
 router.post('/users/import', validate(importUsersSchema), adminController.importUsers);
 router.patch('/users/:id/password', validate(passwordBodySchema), adminController.resetUserPassword);

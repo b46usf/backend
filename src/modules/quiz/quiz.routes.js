@@ -4,12 +4,14 @@ const { LEVELS, QUIZ_TYPES, ROLES } = require('../../config/constants');
 const { authenticate } = require('../../middlewares/auth.middleware');
 const { authorize } = require('../../middlewares/role.middleware');
 const { validate } = require('../../middlewares/validation.middleware');
+const { paginationQueryShape } = require('../../shared/pagination');
 const quizController = require('./quiz.controller');
 
 const router = Router();
 
 const querySchema = {
   query: z.object({
+    ...paginationQueryShape,
     subjectId: z.coerce.number().int().positive().optional(),
     level: z.enum(Object.values(LEVELS)).optional(),
     quizType: z.enum(Object.values(QUIZ_TYPES)).optional(),

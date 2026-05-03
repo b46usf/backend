@@ -1,16 +1,16 @@
 const asyncHandler = require('../../shared/asyncHandler');
+const { paginateList } = require('../../shared/pagination');
 const { sendSuccess } = require('../../shared/response');
 const materialService = require('./material.service');
 
 const listMaterials = asyncHandler(async (req, res) => {
   const materials = await materialService.listMaterials(req.query, req.user.schoolId);
+  const result = paginateList(materials, req.query);
 
   return sendSuccess(res, {
     message: 'Materials fetched successfully',
-    data: materials,
-    meta: {
-      total: materials.length,
-    },
+    data: result.data,
+    meta: result.meta,
   });
 });
 

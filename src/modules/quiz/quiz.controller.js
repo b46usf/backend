@@ -1,16 +1,16 @@
 const asyncHandler = require('../../shared/asyncHandler');
+const { paginateList } = require('../../shared/pagination');
 const { sendSuccess } = require('../../shared/response');
 const quizService = require('./quiz.service');
 
 const listQuizzes = asyncHandler(async (req, res) => {
   const quizzes = await quizService.listQuizzes(req.query, req.user.schoolId);
+  const result = paginateList(quizzes, req.query);
 
   return sendSuccess(res, {
     message: 'Quizzes fetched successfully',
-    data: quizzes,
-    meta: {
-      total: quizzes.length,
-    },
+    data: result.data,
+    meta: result.meta,
   });
 });
 

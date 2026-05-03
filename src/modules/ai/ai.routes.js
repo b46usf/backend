@@ -4,12 +4,14 @@ const { RECOMMENDATION_STATUSES, ROLES } = require('../../config/constants');
 const { authenticate } = require('../../middlewares/auth.middleware');
 const { authorize } = require('../../middlewares/role.middleware');
 const { validate } = require('../../middlewares/validation.middleware');
+const { paginationQueryShape } = require('../../shared/pagination');
 const aiController = require('./ai.controller');
 
 const router = Router();
 
 const querySchema = {
   query: z.object({
+    ...paginationQueryShape,
     studentId: z.coerce.number().int().positive().optional(),
     status: z.enum(Object.values(RECOMMENDATION_STATUSES)).optional(),
   }),
@@ -17,6 +19,7 @@ const querySchema = {
 
 const riskQuerySchema = {
   query: z.object({
+    ...paginationQueryShape,
     classId: z.coerce.number().int().positive().optional(),
   }),
 };

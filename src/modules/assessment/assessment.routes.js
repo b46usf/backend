@@ -4,12 +4,14 @@ const { ROLES } = require('../../config/constants');
 const { authenticate } = require('../../middlewares/auth.middleware');
 const { authorize } = require('../../middlewares/role.middleware');
 const { validate } = require('../../middlewares/validation.middleware');
+const { paginationQueryShape } = require('../../shared/pagination');
 const assessmentController = require('./assessment.controller');
 
 const router = Router();
 
 const querySchema = {
   query: z.object({
+    ...paginationQueryShape,
     studentId: z.coerce.number().int().positive().optional(),
     quizId: z.coerce.number().int().positive().optional(),
   }),

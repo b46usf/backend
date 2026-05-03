@@ -1,16 +1,16 @@
 const asyncHandler = require('../../shared/asyncHandler');
+const { paginateList } = require('../../shared/pagination');
 const { sendSuccess } = require('../../shared/response');
 const studentService = require('./student.service');
 
 const listStudents = asyncHandler(async (req, res) => {
   const students = await studentService.listStudents(req.query, req.user.schoolId);
+  const result = paginateList(students, req.query);
 
   return sendSuccess(res, {
     message: 'Students fetched successfully',
-    data: students,
-    meta: {
-      total: students.length,
-    },
+    data: result.data,
+    meta: result.meta,
   });
 });
 
@@ -34,25 +34,23 @@ const getMyDashboard = asyncHandler(async (req, res) => {
 
 const getMyRecommendations = asyncHandler(async (req, res) => {
   const recommendations = await studentService.getMyRecommendations(req.user.id, req.user.schoolId);
+  const result = paginateList(recommendations, req.query);
 
   return sendSuccess(res, {
     message: 'Student recommendations fetched successfully',
-    data: recommendations,
-    meta: {
-      total: recommendations.length,
-    },
+    data: result.data,
+    meta: result.meta,
   });
 });
 
 const getMyProgress = asyncHandler(async (req, res) => {
   const progress = await studentService.getMyProgress(req.user.id, req.user.schoolId);
+  const result = paginateList(progress, req.query);
 
   return sendSuccess(res, {
     message: 'Student progress fetched successfully',
-    data: progress,
-    meta: {
-      total: progress.length,
-    },
+    data: result.data,
+    meta: result.meta,
   });
 });
 
@@ -72,13 +70,12 @@ const updateMyMaterialProgress = asyncHandler(async (req, res) => {
 
 const getMyBadges = asyncHandler(async (req, res) => {
   const badges = await studentService.getMyBadges(req.user.id, req.user.schoolId);
+  const result = paginateList(badges, req.query);
 
   return sendSuccess(res, {
     message: 'Student badges fetched successfully',
-    data: badges,
-    meta: {
-      total: badges.length,
-    },
+    data: result.data,
+    meta: result.meta,
   });
 });
 

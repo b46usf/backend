@@ -1,16 +1,16 @@
 const asyncHandler = require('../../shared/asyncHandler');
+const { paginateList } = require('../../shared/pagination');
 const { sendSuccess } = require('../../shared/response');
 const aiService = require('./ai.service');
 
 const listRecommendations = asyncHandler(async (req, res) => {
   const recommendations = await aiService.listRecommendations(req.query, req.user.schoolId);
+  const result = paginateList(recommendations, req.query);
 
   return sendSuccess(res, {
     message: 'AI recommendations fetched successfully',
-    data: recommendations,
-    meta: {
-      total: recommendations.length,
-    },
+    data: result.data,
+    meta: result.meta,
   });
 });
 
@@ -79,13 +79,12 @@ const getStudentPerformanceTrend = asyncHandler(async (req, res) => {
 
 const getRiskStudentDetection = asyncHandler(async (req, res) => {
   const students = await aiService.getRiskStudentDetection(req.query, req.user.schoolId);
+  const result = paginateList(students, req.query);
 
   return sendSuccess(res, {
     message: 'Risk student detection fetched successfully',
-    data: students,
-    meta: {
-      total: students.length,
-    },
+    data: result.data,
+    meta: result.meta,
   });
 });
 
